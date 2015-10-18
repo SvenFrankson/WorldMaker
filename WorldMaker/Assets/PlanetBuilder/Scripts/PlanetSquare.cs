@@ -48,7 +48,7 @@ public class PlanetSquare : MonoBehaviour {
 			return;
 		}
 		delay = 0f;
-		float sqrDist = (this.planet.subTarget.position - this.center).sqrMagnitude;
+		float sqrDist = (this.planet.subTarget.position - this.transform.TransformPoint(this.center)).sqrMagnitude;
 
 		if (sqrDist < subLimit) {
 			if (this.childDepth == 0) {
@@ -658,6 +658,8 @@ public class PlanetSquare : MonoBehaviour {
 			for (int b = 0; b < 2; b++) {
 				GameObject g = GameObject.Instantiate<GameObject> (this.planet.squareTemplate);
 				g.transform.parent = this.transform;
+				g.transform.localPosition = Vector3.zero;
+				g.transform.localRotation = Quaternion.identity;
 				PlanetSquare ps = g.GetComponent <PlanetSquare> ();
 				ps.subDegree = this.subDegree + 1;
 
