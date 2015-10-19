@@ -47,7 +47,7 @@ public class AirCraft : MonoBehaviour {
 	}
 
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.Z)) {
+		if (Input.GetKeyDown (KeyCode.W)) {
 			this.enginePow += this.engineInc;
 			if (this.enginePow > this.enginePowMax) {
 				this.enginePow = this.enginePowMax;
@@ -109,7 +109,7 @@ public class AirCraft : MonoBehaviour {
 		this.CRigidbody.AddForce (this.ComputePlanetGravity ());
 
 		float roll = 0;
-		if (Input.GetKey (KeyCode.Q)) {
+		if (Input.GetKey (KeyCode.A)) {
 			roll ++;
 		}
 		if (Input.GetKey (KeyCode.D)) {
