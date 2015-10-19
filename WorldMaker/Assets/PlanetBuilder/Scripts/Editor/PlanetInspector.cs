@@ -20,20 +20,18 @@ public class PlanetInspector : Editor {
 		Target.maxSubDegree = EditorGUILayout.IntSlider ("MaxSubDegree", Target.maxSubDegree, 0, 10);
 		EditorGUILayout.IntField ("HeightMapRange", Target.heightMapRange);
 		EditorGUILayout.FloatField ("Radius", Target.radius);
-		Target.heightRange = EditorGUILayout.IntField ("HeightRange", Target.heightRange);
-
-		if (GUI.changed) {
-			GUI.changed = false;
-			Target.ResetRandomizer ();
-			Target.heightMapRange = PlanetManager.squareLength * Mathf.FloorToInt(Mathf.Pow (2f, Target.maxSubDegree)) + 1;
-			Target.radius = 2f * Target.heightMapRange / Mathf.PI * PlanetManager.TileSize;
-		}
+		Target.heightRangePerCent = EditorGUILayout.Slider ("HeightRange", Target.heightRangePerCent, 0f, 50f);
 
 		Target.atmDensity = EditorGUILayout.FloatField ("Atm Density", Target.atmDensity);
-		Target.atmRange = EditorGUILayout.FloatField ("Atm Range", Target.atmRange);
+		Target.atmRangePerCent = EditorGUILayout.Slider ("Atm Range", Target.atmRangePerCent, 0f, 200f);
 
 		Target.gravIntensity = EditorGUILayout.FloatField ("Grav Intensity", Target.gravIntensity);
-		Target.gravRange = EditorGUILayout.FloatField ("Grav Range", Target.gravRange);
+		Target.gravRangePerCent = EditorGUILayout.Slider ("Grav Range", Target.gravRangePerCent, 0f, 500f);
+		
+		if (GUI.changed) {
+			GUI.changed = false;
+			Target.ReCompute ();
+		}
 
 		Target.squareTemplate = EditorGUILayout.ObjectField ("Square Template", Target.squareTemplate, typeof(GameObject), true) as GameObject;
 		for (int i = 0; i < 6; i++) {

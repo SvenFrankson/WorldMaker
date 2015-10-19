@@ -54,6 +54,7 @@
      <Compile Include="Assets\Utils\RandomSeed\Scripts\RandomSeed.cs" />
      <None Include="Assets\PlanetBuilder\Material\Shader\QuickGround.shader" />
      <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularSmooth.shader" />
+     <None Include="Assets\AirCraft\FBX\Licence.txt" />
      <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularDisplacement.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

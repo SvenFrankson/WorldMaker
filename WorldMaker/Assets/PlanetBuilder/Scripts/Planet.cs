@@ -8,12 +8,15 @@ public class Planet : MonoBehaviour {
 	public int maxSubDegree = 8;
 	public int heightMapRange;
 	public float radius;
-	public int heightRange = 2048;
+	public float heightRangePerCent = 10f;
+	public float heightRange = 2048f;
 
 	public float atmDensity;
+	public float atmRangePerCent = 10f;
 	public float atmRange;
 
 	public float gravIntensity;
+	public float gravRangePerCent = 100f;
 	public float gravRange;
 
 	public GameObject squareTemplate;
@@ -56,8 +59,13 @@ public class Planet : MonoBehaviour {
 		}
 	}
 
-	public void ResetRandomizer () {
+	public void ReCompute () {
 		this.randomizer = null;
+		this.heightMapRange = PlanetManager.squareLength * Mathf.FloorToInt(Mathf.Pow (2f, this.maxSubDegree)) + 1;
+		this.radius = 2f * this.heightMapRange / Mathf.PI * PlanetManager.TileSize;
+		this.heightRange = this.radius * this.heightRangePerCent / 100f;
+		this.atmRange = this.radius * this.atmRangePerCent / 100f;
+		this.gravRange = this.radius * this.gravRangePerCent / 100f;
 	}
 
 	public int SeedFromName () {
@@ -82,6 +90,8 @@ public class Planet : MonoBehaviour {
 	}
 
 	public void Initialize () {
+		this.ReCompute ();
+
 		foreach (PlanetSquare ps in Squares) {
 			if (ps != null) {
 				ps.Initialize ();
