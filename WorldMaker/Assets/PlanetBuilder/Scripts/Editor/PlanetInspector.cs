@@ -16,7 +16,6 @@ public class PlanetInspector : Editor {
 	}
 
 	public override void OnInspectorGUI () {
-		Target.subTarget = EditorGUILayout.ObjectField ("Sub Target", Target.subTarget, typeof(Transform), true) as Transform;
 		Target.planetName = EditorGUILayout.TextField ("Planet Name", Target.planetName);
 		Target.maxSubDegree = EditorGUILayout.IntSlider ("MaxSubDegree", Target.maxSubDegree, 0, 10);
 		EditorGUILayout.IntField ("HeightMapRange", Target.heightMapRange);
@@ -25,9 +24,16 @@ public class PlanetInspector : Editor {
 
 		if (GUI.changed) {
 			GUI.changed = false;
+			Target.ResetRandomizer ();
 			Target.heightMapRange = PlanetManager.squareLength * Mathf.FloorToInt(Mathf.Pow (2f, Target.maxSubDegree)) + 1;
-			Target.radius = 2f * Target.heightMapRange / Mathf.PI;
+			Target.radius = 2f * Target.heightMapRange / Mathf.PI * PlanetManager.TileSize;
 		}
+
+		Target.atmDensity = EditorGUILayout.FloatField ("Atm Density", Target.atmDensity);
+		Target.atmRange = EditorGUILayout.FloatField ("Atm Range", Target.atmRange);
+
+		Target.gravIntensity = EditorGUILayout.FloatField ("Grav Intensity", Target.gravIntensity);
+		Target.gravRange = EditorGUILayout.FloatField ("Grav Range", Target.gravRange);
 
 		Target.squareTemplate = EditorGUILayout.ObjectField ("Square Template", Target.squareTemplate, typeof(GameObject), true) as GameObject;
 		for (int i = 0; i < 6; i++) {

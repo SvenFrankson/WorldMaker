@@ -24,6 +24,7 @@ public class PlanetManager : MonoBehaviour {
 	public int SsquareLength;
 	public int SsquareLengthPow = 6;
 	public int SheightMapSize;
+	public float StileSize = 1f;
 	
 	static public int squareLength {
 		get {
@@ -40,44 +41,43 @@ public class PlanetManager : MonoBehaviour {
 			return Manager.SheightMapSize;
 		}
 	}
-
-	private List<PlanetSquare>[] buffer = null;
-	private List<PlanetSquare>[] Buffer {
+	static public float TileSize {
 		get {
-			if (buffer == null) {
-				buffer = new List<PlanetSquare>[10];
-				for (int i = 0; i < 10; i++) {
-					buffer [i] = new List<PlanetSquare> ();
-				}
-			}
-
-			return buffer;
+			return Manager.StileSize;
 		}
 	}
 
-	public void Start () {
+	private List<KeyValuePair<float, PlanetSquare>> bufferKVP = null;
+	private List<KeyValuePair<float, PlanetSquare>> BufferKVP {
+		get {
+			if (bufferKVP == null) {
+				bufferKVP = new List<KeyValuePair<float, PlanetSquare>> ();
 
+			}
+			
+			return bufferKVP;
+		}
 	}
 
 	public void Update () {
-		for (int i = 9; i >= 0; i--) {
-			if (Buffer [i].Count > 0) {
-				PlanetSquare ps = Buffer [i] [Buffer [i].Count - 1];
-				Buffer [i].RemoveAt (Buffer [i].Count - 1);
-
-				if (ps != null) {
-					ps.Initialize ();
-					return;
-				}
+		while (BufferKVP.Count > 0) {
+			PlanetSquare ps = BufferKVP [BufferKVP.Count - 1].Value;
+			BufferKVP.RemoveAt (BufferKVP.Count - 1);
+			
+			if (ps != null) {
+				ps.Initialize ();
+				return;
 			}
 		}
 	}
 
-	public void Add (PlanetSquare ps) {
-		int sub = ps.subDegree;
-
-		if (!this.Buffer [sub].Contains (ps)) {
-			this.Buffer [sub].Add (ps);
+	public void Add (PlanetSquare ps, float priority) {
+		for (int i = 0; i < BufferKVP.Count; i++) {
+			if (BufferKVP [i].Key > priority) {
+				BufferKVP.Insert (i, new KeyValuePair<float, PlanetSquare> (priority, ps));
+				return;
+			}
 		}
+		BufferKVP.Add (new KeyValuePair<float, PlanetSquare> (priority, ps));
 	}
 }

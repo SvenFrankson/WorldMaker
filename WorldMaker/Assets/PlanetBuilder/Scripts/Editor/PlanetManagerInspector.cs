@@ -17,6 +17,7 @@ public class PlanetManagerInspector : Editor {
 
 	public override void OnInspectorGUI () {
 		Target.SsquareLengthPow = EditorGUILayout.IntSlider ("SquareLengthPow", Target.SsquareLengthPow, 4, 6);
+		Target.StileSize = EditorGUILayout.FloatField ("Tile Size", Target.StileSize);
 		EditorGUILayout.IntField ("SquareLength", Target.SsquareLength);
 
 		if (GUI.changed) {

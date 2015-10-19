@@ -19,8 +19,8 @@ public class PlanetSquare : MonoBehaviour {
 
 	public Planet planet = null;
 	public PlanetSquare parent = null;
-	private PlanetSquare[] children = null;
-	private int childDepth = 0;
+	public PlanetSquare[] children = null;
+	public int childDepth = 0;
 
 	public Vector3 center = Vector3.zero;
 	public float subLimit = 0f;
@@ -48,29 +48,30 @@ public class PlanetSquare : MonoBehaviour {
 			return;
 		}
 		delay = 0f;
-		float sqrDist = (this.planet.subTarget.position - this.transform.TransformPoint(this.center)).sqrMagnitude;
+		float sqrDist = (this.planet.SubTarget.position - this.transform.TransformPoint(this.center)).sqrMagnitude;
 
 		if (sqrDist < subLimit) {
 			if (this.childDepth == 0) {
-				this.Subdivide (true);
+				this.Subdivide (true, subLimit - sqrDist);
 			}
 		} 
 		else if (sqrDist > unSubLimit) {
 			if (this.childDepth == 1) {
+				Debug.Log (this.name + " Unsubdivide");
 				this.UnSubdivide (true);
 			}
 		}
 	}
 
 	public void ComputeSubLimits () {
-		float squareSize = Mathf.FloorToInt (Mathf.Pow (2, this.planet.maxSubDegree - subDegree)) * PlanetManager.squareLength;
+		float squareSize = Mathf.FloorToInt (Mathf.Pow (2, this.planet.maxSubDegree - subDegree)) * PlanetManager.squareLength * PlanetManager.TileSize;
 
 		float distHalfScreen = squareSize / Mathf.Tan (Mathf.Deg2Rad * 30f);
 
 		this.subLimit = distHalfScreen * 1.5f;
-		this.subLimit = this.subLimit * this.subLimit;
+		this.subLimit *= this.subLimit;
 		this.unSubLimit = distHalfScreen * 3f;
-		this.unSubLimit = this.unSubLimit * this.unSubLimit;
+		this.unSubLimit *= this.unSubLimit;
 	}
 
 	public void Initialize () {
@@ -121,7 +122,7 @@ public class PlanetSquare : MonoBehaviour {
 		yRad = Mathf.Deg2Rad * yRad;
 		zRad = Mathf.Deg2Rad * zRad;
 
-		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + (value - 256f) / 512f * this.planet.heightRange);
+		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value * this.planet.heightRange * PlanetManager.TileSize);
 	}
 
 	public float Evaluate (int x, int y, int z) {
@@ -141,22 +142,22 @@ public class PlanetSquare : MonoBehaviour {
 			float yd = (float) (y % range) / (float) range;
 			float zd = (float) (z % range) / (float) range;
 
-			int[][][] f = new int[2][][];
+			float[][][] f = new float[2][][];
 			for (int i = 0; i < 2; i++) {
-				f [i] = new int[2][];
+				f [i] = new float[2][];
 				for (int j = 0; j < 2; j++) {
-					f [i][j] = new int[2];
+					f [i][j] = new float[2];
 				}
 			}
 
-			f [0][0][0] = RandomSeed.Rand (x0 ,y0, z0, d);
-			f [0][0][1] = RandomSeed.Rand (x0 ,y0, z1, d);
-			f [0][1][0] = RandomSeed.Rand (x0 ,y1, z0, d);
-			f [0][1][1] = RandomSeed.Rand (x0 ,y1, z1, d);
-			f [1][0][0] = RandomSeed.Rand (x1 ,y0, z0, d);
-			f [1][0][1] = RandomSeed.Rand (x1 ,y0, z1, d);
-			f [1][1][0] = RandomSeed.Rand (x1 ,y1, z0, d);
-			f [1][1][1] = RandomSeed.Rand (x1 ,y1, z1, d);
+			f [0][0][0] = this.planet.Randomizer.Rand (x0 ,y0, z0, d);
+			f [0][0][1] = this.planet.Randomizer.Rand (x0 ,y0, z1, d);
+			f [0][1][0] = this.planet.Randomizer.Rand (x0 ,y1, z0, d);
+			f [0][1][1] = this.planet.Randomizer.Rand (x0 ,y1, z1, d);
+			f [1][0][0] = this.planet.Randomizer.Rand (x1 ,y0, z0, d);
+			f [1][0][1] = this.planet.Randomizer.Rand (x1 ,y0, z1, d);
+			f [1][1][0] = this.planet.Randomizer.Rand (x1 ,y1, z0, d);
+			f [1][1][1] = this.planet.Randomizer.Rand (x1 ,y1, z1, d);
 
 			float v00 = f[0][0][0] * (1f - xd) + f [1][0][0] * xd;
 			float v10 = f[0][1][0] * (1f - xd) + f [1][1][0] * xd;
@@ -636,10 +637,19 @@ public class PlanetSquare : MonoBehaviour {
 		}
 
 		this.childDepth = 0;
-		this.Initialize ();
+		if (this.parent != null) {
+			this.parent.childDepth = 1;
+		}
+
+		if (usePlanetManager) {
+			PlanetManager.Manager.Add (this, 0f);
+		} 
+		else {
+			this.Initialize ();
+		}
 	}
 
-	public void Subdivide (bool usePlanetManager) {
+	public void Subdivide (bool usePlanetManager, float priority) {
 		if (this.childDepth != 0) {
 			return;
 		}
@@ -694,7 +704,7 @@ public class PlanetSquare : MonoBehaviour {
 				ps.name = "Square " + ps.subDegree + "." + ps.iPos + ":" + ps.jPos + ":" + ps.kPos;
 
 				if (usePlanetManager) {
-					PlanetManager.Manager.Add (ps);
+					PlanetManager.Manager.Add (ps, priority);
 				}
 				else {
 					ps.Initialize ();

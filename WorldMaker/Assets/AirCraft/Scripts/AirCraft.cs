@@ -38,6 +38,10 @@ public class AirCraft : MonoBehaviour {
 	public float cPitch;
 	public float cRoll;
 
+	public Planet[] planets;
+
+	private float localAtm = 1f;
+
 	void Start () {
 		this.enginePow = 0f;
 	}
@@ -93,14 +97,16 @@ public class AirCraft : MonoBehaviour {
 			this.engineBoost = false;
 			this.CRigidbody.AddForce (enginePow * this.transform.forward);
 		}
-		this.cRigidbody.AddForce (sqrForwardVelocity * this.lift * this.transform.up);
+		this.cRigidbody.AddForce (sqrForwardVelocity * this.lift * this.transform.up * this.localAtm);
 
-		this.cRigidbody.AddForce (- sqrForwardVelocity * this.cForward * this.transform.forward);
-		this.cRigidbody.AddForce (- sqrRightVelocity * this.cRight * this.transform.right);
-		this.cRigidbody.AddForce (- sqrUpVelocity * this.cUp * this.transform.up);
+		this.cRigidbody.AddForce (- sqrForwardVelocity * this.cForward * this.transform.forward * this.localAtm);
+		this.cRigidbody.AddForce (- sqrRightVelocity * this.cRight * this.transform.right * this.localAtm);
+		this.cRigidbody.AddForce (- sqrUpVelocity * this.cUp * this.transform.up * this.localAtm);
 
 		this.CRigidbody.AddTorque (cYaw * mouseX * this.transform.up);
 		this.CRigidbody.AddTorque (- cPitch * mouseY * this.transform.right);
+
+		this.CRigidbody.AddForce (this.ComputePlanetGravity ());
 
 		float roll = 0;
 		if (Input.GetKey (KeyCode.Q)) {
@@ -123,8 +129,32 @@ public class AirCraft : MonoBehaviour {
 		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
 		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
 		GUILayout.TextArea ("UpVelocity = " + this.upVelocity);
-		GUILayout.TextArea ("Velocity = " + this.CRigidbody.velocity);
 		GUILayout.TextArea ("MouseX = " + this.mouseX);
 		GUILayout.TextArea ("MouseY = " + this.mouseY);
+		GUILayout.TextArea ("Local Atm = " + this.localAtm);
+		foreach (Planet p in this.planets) {
+			GUILayout.TextArea (p.planetName + " : " + ((p.transform.position - this.transform.position).magnitude - p.radius) + " m");
+		}
+	}
+
+	public Vector3 ComputePlanetGravity () {
+		this.localAtm = 0.01f;
+		Vector3 gravity = Vector3.zero;
+		
+		foreach (Planet p in this.planets) {
+			float dist = ((p.transform.position - this.transform.position).magnitude - p.radius);
+			dist = Mathf.Max (dist, 0f);
+			
+			float g = (p.gravRange - dist) / p.gravRange * p.gravIntensity;
+			if (g > 0) {
+				gravity += (p.transform.position - this.transform.position).normalized * g;
+			}
+			float a = (p.atmRange - dist) / p.atmRange * p.atmDensity;;
+			if (a > 0) {
+				this.localAtm += a;
+			}
+		}
+
+		return gravity;
 	}
 }

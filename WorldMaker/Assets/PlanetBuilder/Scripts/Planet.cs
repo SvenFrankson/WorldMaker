@@ -10,9 +10,24 @@ public class Planet : MonoBehaviour {
 	public float radius;
 	public int heightRange = 2048;
 
+	public float atmDensity;
+	public float atmRange;
+
+	public float gravIntensity;
+	public float gravRange;
+
 	public GameObject squareTemplate;
 
-	public Transform subTarget;
+	private Transform subTarget;
+	public Transform SubTarget {
+		get {
+			if (this.subTarget == null) {
+				this.subTarget = FindObjectOfType<Camera> ().transform;
+			}
+
+			return this.subTarget;
+		}
+	}
 
 	private PlanetSquare[] squares;
 	public PlanetSquare[] Squares {
@@ -28,6 +43,30 @@ public class Planet : MonoBehaviour {
 
 			return this.squares;
 		}
+	}
+
+	private RandomSeed randomizer = null;
+	public RandomSeed Randomizer {
+		get {
+			if (this.randomizer == null) {
+				this.randomizer = new RandomSeed (this.SeedFromName ());
+			}
+
+			return this.randomizer;
+		}
+	}
+
+	public void ResetRandomizer () {
+		this.randomizer = null;
+	}
+
+	public int SeedFromName () {
+		int seed = 0;
+		foreach (char c in this.planetName) {
+			seed += (int) c;
+		}
+
+		return Mathf.Abs (seed);
 	}
 
 	public void FindSquares () {
