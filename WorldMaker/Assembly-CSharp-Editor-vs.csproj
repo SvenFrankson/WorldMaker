@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\PlanetBuilder\Material\Scripts\Editor\MaterialPositionInspector.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Editor\PlanetInspector.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Editor\PlanetManagerInspector.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Editor\PlanetSquareInspector.cs" />

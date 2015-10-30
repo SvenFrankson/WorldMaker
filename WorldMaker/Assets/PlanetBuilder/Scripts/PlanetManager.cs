@@ -47,6 +47,34 @@ public class PlanetManager : MonoBehaviour {
 		}
 	}
 
+	public int count;
+	public Planet[] planets;
+	public int[] orbits;
+	public float[] alphas;
+
+	public void UpdateCount () {
+		if (this.planets == null) {
+			this.planets = new Planet[this.count];
+			this.orbits = new int[this.count];
+			this.alphas = new float[this.count];
+		}
+		else {
+			Planet[] newPlanets = new Planet[this.count];
+			int[] newOrbits = new int[this.count];
+			float[] newAlphas = new float[this.count];
+
+			for (int i = 0; i < Mathf.Min (planets.Length, this.count); i++) {
+				newPlanets [i] = this.planets [i];
+				newOrbits [i] = this.orbits [i];
+				newAlphas [i] = this.alphas [i];
+			}
+
+			this.planets = newPlanets;
+			this.orbits = newOrbits;
+			this.alphas = newAlphas;
+		}
+	}
+
 	private List<KeyValuePair<float, PlanetSquare>> bufferKVP = null;
 	private List<KeyValuePair<float, PlanetSquare>> BufferKVP {
 		get {
@@ -56,6 +84,19 @@ public class PlanetManager : MonoBehaviour {
 			}
 			
 			return bufferKVP;
+		}
+	}
+
+	public void Awake () {
+		this.Initialize ();
+	}
+
+	public void Initialize () {
+		for (int i = 0; i < this.count; i++) {
+			Planet p = GameObject.Instantiate<Planet> (this.planets [i]);
+			StellarObject sO = p.GetComponent <StellarObject> ();
+			sO.truePos = Quaternion.AngleAxis (this.alphas [i], Vector3.up) * Vector3.forward * this.orbits [i];
+			p.Initialize ();
 		}
 	}
 

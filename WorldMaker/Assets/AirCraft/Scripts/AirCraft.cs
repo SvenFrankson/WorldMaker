@@ -38,7 +38,16 @@ public class AirCraft : MonoBehaviour {
 	public float cPitch;
 	public float cRoll;
 
-	public Planet[] planets;
+	private Planet[] planets = null;
+	private Planet[] Planets {
+		get {
+			if (planets == null ) {
+				this.planets = FindObjectsOfType <Planet> ();
+			}
+
+			return this.planets;
+		}
+	}
 
 	private float localAtm = 1f;
 
@@ -132,7 +141,7 @@ public class AirCraft : MonoBehaviour {
 		GUILayout.TextArea ("MouseX = " + this.mouseX);
 		GUILayout.TextArea ("MouseY = " + this.mouseY);
 		GUILayout.TextArea ("Local Atm = " + this.localAtm);
-		foreach (Planet p in this.planets) {
+		foreach (Planet p in this.Planets) {
 			GUILayout.TextArea (p.planetName + " : " + ((p.transform.position - this.transform.position).magnitude - p.radius) + " m");
 		}
 	}
@@ -141,7 +150,7 @@ public class AirCraft : MonoBehaviour {
 		this.localAtm = 0.01f;
 		Vector3 gravity = Vector3.zero;
 		
-		foreach (Planet p in this.planets) {
+		foreach (Planet p in this.Planets) {
 			float dist = ((p.transform.position - this.transform.position).magnitude - p.radius);
 			dist = Mathf.Max (dist, 0f);
 			

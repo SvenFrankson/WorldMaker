@@ -57,7 +57,6 @@ public class PlanetSquare : MonoBehaviour {
 		} 
 		else if (sqrDist > unSubLimit) {
 			if (this.childDepth == 1) {
-				Debug.Log (this.name + " Unsubdivide");
 				this.UnSubdivide (true);
 			}
 		}

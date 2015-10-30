@@ -48,6 +48,9 @@
   <ItemGroup>
      <Compile Include="Assets\AirCraft\Scripts\AirCraft.cs" />
      <Compile Include="Assets\AirCraft\Scripts\AirCraftCam.cs" />
+     <Compile Include="Assets\PlanetBuilder\Material\Scripts\MaterialPosition.cs" />
+     <Compile Include="Assets\PlanetBuilder\Scripts\Gameplay\StellarObject.cs" />
+     <Compile Include="Assets\PlanetBuilder\Scripts\Gameplay\StellarObjectCenter.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Planet.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\PlanetManager.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\PlanetSquare.cs" />
