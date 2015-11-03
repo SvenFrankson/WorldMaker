@@ -4,6 +4,11 @@ using System.Collections;
 public class StellarObjectCenter : MonoBehaviour {
 
 	public Vector3 truePos;
+	public Vector3 TruePos {
+		get {
+			return this.truePos + this.transform.position;
+		}
+	}
 
 	public float maxDistance = 100000f;
 

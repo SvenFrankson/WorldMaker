@@ -16,7 +16,6 @@ public class PlanetInspector : Editor {
 	}
 
 	private bool showAtmHandles = false;
-	private bool showGravHandles = false;
 
 	public override void OnInspectorGUI () {
 		Target.planetName = EditorGUILayout.TextField ("Planet Name", Target.planetName);
@@ -45,12 +44,10 @@ public class PlanetInspector : Editor {
 		EditorGUILayout.EndHorizontal ();
 
 		Target.gravIntensity = EditorGUILayout.FloatField ("Grav Intensity", Target.gravIntensity);
-		Target.gravRangePerCent = EditorGUILayout.IntSlider ("Grav Range (%radius)", Target.gravRangePerCent, 0, 500);
-		this.showGravHandles = EditorGUILayout.Toggle ("Show", this.showGravHandles);
 		
 		EditorGUILayout.BeginHorizontal ();
-		EditorGUILayout.PrefixLabel ("Grav Range");
-		EditorGUILayout.LabelField (Target.gravRange + " m");
+		EditorGUILayout.PrefixLabel ("Mass");
+		EditorGUILayout.LabelField ((Target.mass / 1000f) + "kT");
 		EditorGUILayout.EndHorizontal ();
 		
 		if (GUI.changed) {
@@ -61,6 +58,7 @@ public class PlanetInspector : Editor {
 
 		Target.squareTemplate = EditorGUILayout.ObjectField ("Square Template", Target.squareTemplate, typeof(GameObject), false) as GameObject;
 		Target.waterTemplate = EditorGUILayout.ObjectField ("Water Template", Target.waterTemplate, typeof(GameObject), false) as GameObject;
+		Target.atmTemplate = EditorGUILayout.ObjectField ("Atm Template", Target.atmTemplate, typeof(GameObject), false) as GameObject;
 
 		if (GUILayout.Button ("Initialize")) {
 			Target.Initialize ();
@@ -83,9 +81,6 @@ public class PlanetInspector : Editor {
 	public void OnSceneGUI () {
 		if (this.showAtmHandles) {
 			DrawWireSphere (Target.transform.position, Target.transform.up, Target.radius + Target.atmRange, Color.green, 5 * Target.maxSubDegree);
-		}
-		if (this.showGravHandles) {
-			DrawWireSphere (Target.transform.position, Target.transform.up, Target.radius + Target.gravRange, Color.red, 5 * Target.maxSubDegree);
 		}
 	}
 }

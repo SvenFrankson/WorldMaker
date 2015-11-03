@@ -48,7 +48,7 @@ public class PlanetSquare : MonoBehaviour {
 			return;
 		}
 		delay = 0f;
-		float sqrDist = (this.planet.SubTarget.position - this.transform.TransformPoint(this.center)).sqrMagnitude;
+		float sqrDist = (this.planet.SubTarget.position - this.transform.TransformPoint(this.center)).sqrMagnitude / this.transform.localScale.x;
 
 		if (sqrDist < subLimit) {
 			if (this.childDepth == 0) {
@@ -121,7 +121,7 @@ public class PlanetSquare : MonoBehaviour {
 		yRad = Mathf.Deg2Rad * yRad;
 		zRad = Mathf.Deg2Rad * zRad;
 
-		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value * this.planet.heightRange * PlanetManager.TileSize);
+		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value / 2f * this.planet.heightRange * PlanetManager.TileSize);
 	}
 
 	public float Evaluate (int x, int y, int z) {
@@ -669,6 +669,7 @@ public class PlanetSquare : MonoBehaviour {
 				g.transform.parent = this.transform;
 				g.transform.localPosition = Vector3.zero;
 				g.transform.localRotation = Quaternion.identity;
+				g.transform.localScale = Vector3.one;
 				PlanetSquare ps = g.GetComponent <PlanetSquare> ();
 				ps.subDegree = this.subDegree + 1;
 

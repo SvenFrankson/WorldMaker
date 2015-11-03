@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(StellarObject))]
 public class Planet : MonoBehaviour {
 
 	public string planetName;
@@ -16,11 +17,22 @@ public class Planet : MonoBehaviour {
 	public float atmRange;
 
 	public float gravIntensity;
-	public int gravRangePerCent = 100;
-	public float gravRange;
+	public float mass;
 
 	public GameObject squareTemplate;
 	public GameObject waterTemplate;
+	public GameObject atmTemplate;
+	
+	private StellarObject truePos;
+	public StellarObject TruePos {
+		get {
+			if (this.truePos == null) {
+				this.truePos = this.GetComponent<StellarObject> ();
+			}
+			
+			return this.truePos;
+		}
+	}
 
 	private Transform subTarget;
 	public Transform SubTarget {
@@ -57,7 +69,7 @@ public class Planet : MonoBehaviour {
 		this.radius = 2f * this.heightMapRange / Mathf.PI * PlanetManager.TileSize;
 		this.heightRange = this.radius * this.heightRangePerCent / 100f;
 		this.atmRange = this.radius * this.atmRangePerCent / 100f;
-		this.gravRange = this.radius * this.gravRangePerCent / 100f;
+		this.mass = this.gravIntensity * this.radius * this.radius;
 	}
 
 	public int SeedFromName () {
@@ -117,6 +129,7 @@ public class Planet : MonoBehaviour {
 		this.FlushPlanet ();
 		this.CreateSquares ();
 		this.SetWater ();
+		this.SetAtm ();
 
 		foreach (PlanetSquare ps in Squares) {
 			if (ps != null) {
@@ -133,6 +146,18 @@ public class Planet : MonoBehaviour {
 				water.transform.localScale = Vector3.one * this.radius;
 				water.transform.localPosition = Vector3.zero;
 				water.name = "Water";
+			}
+		}
+	}
+	
+	public void SetAtm () {
+		if (this.atmTemplate != null) {
+			GameObject atm = GameObject.Instantiate<GameObject> (this.atmTemplate);
+			if (atm != null) {
+				atm.transform.parent = this.transform;
+				atm.transform.localScale = Vector3.one * (this.radius + this.atmRange);
+				atm.transform.localPosition = Vector3.zero;
+				atm.name = "Atm";
 			}
 		}
 	}

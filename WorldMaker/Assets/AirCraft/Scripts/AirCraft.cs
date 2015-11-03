@@ -1,8 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(StellarObjectCenter))]
 [RequireComponent(typeof(Rigidbody))]
 public class AirCraft : MonoBehaviour {
+	
+	private StellarObjectCenter truePos;
+	private StellarObjectCenter TruePos {
+		get {
+			if (truePos == null) {
+				this.truePos = this.GetComponent<StellarObjectCenter> ();
+			}
+			
+			return truePos;
+		}
+	}
 
 	private Rigidbody cRigidbody;
 	private Rigidbody CRigidbody {
@@ -30,9 +42,7 @@ public class AirCraft : MonoBehaviour {
 	
 	public float wingC;
 	public float leftWingRotation;
-	public Transform leftWing;
 	public float rightWingRotation;
-	public Transform rightWing;
 
 	public float cYaw;
 	public float cPitch;
@@ -115,7 +125,7 @@ public class AirCraft : MonoBehaviour {
 		this.CRigidbody.AddTorque (cYaw * mouseX * this.transform.up);
 		this.CRigidbody.AddTorque (- cPitch * mouseY * this.transform.right);
 
-		this.CRigidbody.AddForce (this.ComputePlanetGravity ());
+		this.CRigidbody.AddForce (this.CRigidbody.mass * this.ComputePlanetGravity ());
 
 		float roll = 0;
 		if (Input.GetKey (KeyCode.A)) {
@@ -142,22 +152,20 @@ public class AirCraft : MonoBehaviour {
 		GUILayout.TextArea ("MouseY = " + this.mouseY);
 		GUILayout.TextArea ("Local Atm = " + this.localAtm);
 		foreach (Planet p in this.Planets) {
-			GUILayout.TextArea (p.planetName + " : " + ((p.transform.position - this.transform.position).magnitude - p.radius) + " m");
+			GUILayout.TextArea (p.planetName + " : " + ((p.TruePos.TruePos - this.TruePos.TruePos).magnitude - p.radius) + " m");
 		}
 	}
 
 	public Vector3 ComputePlanetGravity () {
-		this.localAtm = 0.01f;
+		this.localAtm = 0f;
 		Vector3 gravity = Vector3.zero;
 		
 		foreach (Planet p in this.Planets) {
 			float dist = ((p.transform.position - this.transform.position).magnitude - p.radius);
 			dist = Mathf.Max (dist, 0f);
-			
-			float g = (p.gravRange - dist) / p.gravRange * p.gravIntensity;
-			if (g > 0) {
-				gravity += (p.transform.position - this.transform.position).normalized * g;
-			}
+
+			gravity += p.mass / (p.TruePos.TruePos - this.TruePos.TruePos).sqrMagnitude * (p.TruePos.TruePos - this.TruePos.TruePos).normalized;
+
 			float a = (p.atmRange - dist) / p.atmRange * p.atmDensity;;
 			if (a > 0) {
 				this.localAtm += a;

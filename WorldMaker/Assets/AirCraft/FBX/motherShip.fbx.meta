@@ -1,16 +1,32 @@
 fileFormatVersion: 2
-guid: 0d763bbb1b4915d4ab7c080c726dd6da
-timeCreated: 1443975048
+guid: 6a3f264f1fe329347b788dd4a371cde3
+timeCreated: 1446573094
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Cube
-    6400000: //RootNode
+    100000: Cube
+    100002: //RootNode
+    100004: Window
+    100006: Map
+    100008: Ship
+    400000: Cube
+    400002: //RootNode
+    400004: Window
+    400006: Map
+    400008: Ship
+    2300000: Cube
+    2300002: Window
+    2300004: Map
+    2300006: Ship
+    3300000: Cube
+    3300002: Window
+    3300004: Map
+    3300006: Ship
+    4300000: Window
+    4300002: Cube
+    4300004: Map
+    4300006: Ship
   materials:
     importMaterials: 1
     materialName: 0
@@ -32,7 +48,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -48,8 +64,8 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
-    normalImportMode: 1
-    tangentImportMode: 1
+    normalImportMode: 0
+    tangentImportMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
