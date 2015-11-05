@@ -46,16 +46,17 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\AirCraft\Scripts\AirCraft.cs" />
      <Compile Include="Assets\AirCraft\Scripts\AirCraftCam.cs" />
-     <Compile Include="Assets\PlanetBuilder\Material\Scripts\MaterialPosition.cs" />
+     <Compile Include="Assets\AirCraft\Scripts\MotherShip.cs" />
+     <Compile Include="Assets\AirCraft\Scripts\MotherShipMap.cs" />
+     <Compile Include="Assets\PlanetBuilder\Resources\Material\Scripts\MaterialPosition.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Gameplay\StellarObject.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Gameplay\StellarObjectCenter.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\Planet.cs" />
-     <Compile Include="Assets\PlanetBuilder\Scripts\PlanetManager.cs" />
      <Compile Include="Assets\PlanetBuilder\Scripts\PlanetSquare.cs" />
+     <Compile Include="Assets\PlanetBuilder\Scripts\StellarSystem.cs" />
      <Compile Include="Assets\Utils\RandomSeed\Scripts\RandomSeed.cs" />
-     <None Include="Assets\PlanetBuilder\Material\Shader\QuickGround.shader" />
+     <None Include="Assets\PlanetBuilder\Resources\Material\Shader\QuickGround.shader" />
      <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularSmooth.shader" />
      <None Include="Assets\AirCraft\FBX\Licence.txt" />
      <None Include="Assets\Standard Assets\Effects\TessellationShaders\Shaders\BumpedSpecularDisplacement.shader" />

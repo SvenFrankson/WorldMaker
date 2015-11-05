@@ -63,7 +63,7 @@ public class PlanetSquare : MonoBehaviour {
 	}
 
 	public void ComputeSubLimits () {
-		float squareSize = Mathf.FloorToInt (Mathf.Pow (2, this.planet.maxSubDegree - subDegree)) * PlanetManager.squareLength * PlanetManager.TileSize;
+		float squareSize = Mathf.FloorToInt (Mathf.Pow (2, this.planet.maxSubDegree - subDegree)) * StellarSystem.squareLength * StellarSystem.TileSize;
 
 		float distHalfScreen = squareSize / Mathf.Tan (Mathf.Deg2Rad * 30f);
 
@@ -78,9 +78,9 @@ public class PlanetSquare : MonoBehaviour {
 			this.parent.RemoveMesh ();
 		}
 
-		this.xPos = (this.iPos - 1) * PlanetManager.squareLength * Mathf.FloorToInt (Mathf.Pow (2f,  this.planet.maxSubDegree - subDegree));
-		this.yPos = (this.jPos - 1) * PlanetManager.squareLength * Mathf.FloorToInt (Mathf.Pow (2f,  this.planet.maxSubDegree - subDegree));
-		this.zPos = (this.kPos - 1) * PlanetManager.squareLength * Mathf.FloorToInt (Mathf.Pow (2f,  this.planet.maxSubDegree - subDegree));
+		this.xPos = (this.iPos - 1) * StellarSystem.squareLength * Mathf.FloorToInt (Mathf.Pow (2f,  this.planet.maxSubDegree - subDegree));
+		this.yPos = (this.jPos - 1) * StellarSystem.squareLength * Mathf.FloorToInt (Mathf.Pow (2f,  this.planet.maxSubDegree - subDegree));
+		this.zPos = (this.kPos - 1) * StellarSystem.squareLength * Mathf.FloorToInt (Mathf.Pow (2f,  this.planet.maxSubDegree - subDegree));
 
 		this.indexSize = Mathf.FloorToInt (Mathf.Pow (2f, subDegree)) + 1;
 
@@ -121,12 +121,12 @@ public class PlanetSquare : MonoBehaviour {
 		yRad = Mathf.Deg2Rad * yRad;
 		zRad = Mathf.Deg2Rad * zRad;
 
-		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value / 2f * this.planet.heightRange * PlanetManager.TileSize);
+		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value / 2f * this.planet.heightRange * StellarSystem.TileSize);
 	}
 
 	public float Evaluate (int x, int y, int z) {
 		float value = 0f;
-		int degree =  this.planet.maxSubDegree + PlanetManager.squareLengthPow;
+		int degree =  this.planet.maxSubDegree + StellarSystem.squareLengthPow;
 
 		for (int d = 2; d < degree; d++) {
 			int range = Mathf.FloorToInt(Mathf.Pow (2f, degree - d));
@@ -177,14 +177,14 @@ public class PlanetSquare : MonoBehaviour {
 	public int[] GetTrianglesAntiClockWise () {
 		List<int> trianglesList = new List<int> ();
 
-		for (int i = 0; i <  PlanetManager.heightMapSize - 1; i++) {
-			for (int j = 0; j <  PlanetManager.heightMapSize - 1; j++) {
-				trianglesList.Add (i + j * ( PlanetManager.heightMapSize));
-				trianglesList.Add ((i + 1) + j * ( PlanetManager.heightMapSize));
-				trianglesList.Add ((i + 1) + (j + 1) * ( PlanetManager.heightMapSize));
-				trianglesList.Add ((i + 1) + (j + 1) * ( PlanetManager.heightMapSize));
-				trianglesList.Add (i + (j + 1) * ( PlanetManager.heightMapSize));
-				trianglesList.Add (i + j * ( PlanetManager.heightMapSize));
+		for (int i = 0; i <  StellarSystem.heightMapSize - 1; i++) {
+			for (int j = 0; j <  StellarSystem.heightMapSize - 1; j++) {
+				trianglesList.Add (i + j * ( StellarSystem.heightMapSize));
+				trianglesList.Add ((i + 1) + j * ( StellarSystem.heightMapSize));
+				trianglesList.Add ((i + 1) + (j + 1) * ( StellarSystem.heightMapSize));
+				trianglesList.Add ((i + 1) + (j + 1) * ( StellarSystem.heightMapSize));
+				trianglesList.Add (i + (j + 1) * ( StellarSystem.heightMapSize));
+				trianglesList.Add (i + j * ( StellarSystem.heightMapSize));
 			}
 		}
 
@@ -194,14 +194,14 @@ public class PlanetSquare : MonoBehaviour {
 	public int[] GetTrianglesClockWise () {
 		List<int> trianglesList = new List<int> ();
 		
-		for (int i = 0; i <  PlanetManager.heightMapSize - 1; i++) {
-			for (int j = 0; j <  PlanetManager.heightMapSize - 1; j++) {
-				trianglesList.Add (i + j * ( PlanetManager.heightMapSize));
-				trianglesList.Add ((i + 1) + (j + 1) * ( PlanetManager.heightMapSize));
-				trianglesList.Add ((i + 1) + j * ( PlanetManager.heightMapSize));
-				trianglesList.Add ((i + 1) + (j + 1) * ( PlanetManager.heightMapSize));
-				trianglesList.Add (i + j * ( PlanetManager.heightMapSize));
-				trianglesList.Add (i + (j + 1) * ( PlanetManager.heightMapSize));
+		for (int i = 0; i <  StellarSystem.heightMapSize - 1; i++) {
+			for (int j = 0; j <  StellarSystem.heightMapSize - 1; j++) {
+				trianglesList.Add (i + j * ( StellarSystem.heightMapSize));
+				trianglesList.Add ((i + 1) + (j + 1) * ( StellarSystem.heightMapSize));
+				trianglesList.Add ((i + 1) + j * ( StellarSystem.heightMapSize));
+				trianglesList.Add ((i + 1) + (j + 1) * ( StellarSystem.heightMapSize));
+				trianglesList.Add (i + j * ( StellarSystem.heightMapSize));
+				trianglesList.Add (i + (j + 1) * ( StellarSystem.heightMapSize));
 			}
 		}
 		
@@ -215,23 +215,23 @@ public class PlanetSquare : MonoBehaviour {
 		List<Vector3> normalsList = new List<Vector3> ();
 		int step = Mathf.FloorToInt (Mathf.Pow (2,  this.planet.maxSubDegree - subDegree));
 
-		Vector3 [][] bufferVertices = new Vector3[PlanetManager.heightMapSize][];
-		for (int i = 0; i < PlanetManager.heightMapSize; i++) {
-			bufferVertices [i] = new Vector3[PlanetManager.heightMapSize];
+		Vector3 [][] bufferVertices = new Vector3[StellarSystem.heightMapSize][];
+		for (int i = 0; i < StellarSystem.heightMapSize; i++) {
+			bufferVertices [i] = new Vector3[StellarSystem.heightMapSize];
 		}
 
 		if (this.kPos == 0) {
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
 					verticesList.Add (EvaluateVertex (xPos + i * step, yPos + j * step, 0));
 					bufferVertices [i][j] = verticesList [verticesList.Count - 1];
 				}
 			}
 
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
 					Vector3 vPlusI;
-					if (i + 1 < PlanetManager.heightMapSize) {
+					if (i + 1 < StellarSystem.heightMapSize) {
 						vPlusI = bufferVertices [i + 1][j];
 					}
 					else if (xPos + (i + 1) * step < this.planet.heightMapRange) {
@@ -255,7 +255,7 @@ public class PlanetSquare : MonoBehaviour {
 					vMinusI = vMinusI - bufferVertices [i][j];
 
 					Vector3 vPlusJ;
-					if (j + 1 < PlanetManager.heightMapSize) {
+					if (j + 1 < StellarSystem.heightMapSize) {
 						vPlusJ = bufferVertices [i][j + 1];
 					}
 					else if (yPos + (j + 1) * step < this.planet.heightMapRange) {
@@ -289,17 +289,17 @@ public class PlanetSquare : MonoBehaviour {
 			m.normals = normalsList.ToArray ();
 		} 
 		else if (this.jPos == 0) {
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					verticesList.Add (EvaluateVertex (xPos + i * step, 0, zPos + k * step));
 					bufferVertices [i][k] = verticesList [verticesList.Count - 1];
 				}
 			}
 
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					Vector3 vPlusI;
-					if (i + 1 < PlanetManager.heightMapSize) {
+					if (i + 1 < StellarSystem.heightMapSize) {
 						vPlusI = bufferVertices [i + 1][k];
 					}
 					else if (xPos + (i + 1) * step < this.planet.heightMapRange) {
@@ -323,7 +323,7 @@ public class PlanetSquare : MonoBehaviour {
 					vMinusI = vMinusI - bufferVertices [i][k];
 					
 					Vector3 vPlusK;
-					if (k + 1 < PlanetManager.heightMapSize) {
+					if (k + 1 < StellarSystem.heightMapSize) {
 						vPlusK = bufferVertices [i][k + 1];
 					}
 					else if (zPos + (k + 1) * step < this.planet.heightMapRange) {
@@ -356,16 +356,16 @@ public class PlanetSquare : MonoBehaviour {
 			m.normals = normalsList.ToArray ();
 		}
 		else if (this.iPos == 0) {
-			for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					verticesList.Add (EvaluateVertex (0, yPos + j * step, zPos + k * step));
 					bufferVertices [j][k] = verticesList [verticesList.Count - 1];
 				}
 			}
-			for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					Vector3 vPlusJ;
-					if (j + 1 < PlanetManager.heightMapSize) {
+					if (j + 1 < StellarSystem.heightMapSize) {
 						vPlusJ = bufferVertices [j + 1][k];
 					}
 					else if (yPos + (j + 1) * step < this.planet.heightMapRange) {
@@ -389,7 +389,7 @@ public class PlanetSquare : MonoBehaviour {
 					vMinusJ = vMinusJ - bufferVertices [j][k];
 					
 					Vector3 vPlusK;
-					if (k + 1 < PlanetManager.heightMapSize) {
+					if (k + 1 < StellarSystem.heightMapSize) {
 						vPlusK = bufferVertices [j][k + 1];
 					}
 					else if (zPos + (k + 1) * step < this.planet.heightMapRange) {
@@ -422,17 +422,17 @@ public class PlanetSquare : MonoBehaviour {
 			m.normals = normalsList.ToArray ();
 		}
 		else if (this.kPos == indexSize) {
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
 					verticesList.Add (EvaluateVertex (xPos + i * step, yPos + j * step, zPos));
 					bufferVertices [i][j] = verticesList [verticesList.Count - 1];
 				}
 			}
 
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
 					Vector3 vPlusI;
-					if (i + 1 < PlanetManager.heightMapSize) {
+					if (i + 1 < StellarSystem.heightMapSize) {
 						vPlusI = bufferVertices [i + 1][j];
 					}
 					else if (xPos + (i + 1) * step < this.planet.heightMapRange) {
@@ -456,7 +456,7 @@ public class PlanetSquare : MonoBehaviour {
 					vMinusI = vMinusI - bufferVertices [i][j];
 					
 					Vector3 vPlusJ;
-					if (j + 1 < PlanetManager.heightMapSize) {
+					if (j + 1 < StellarSystem.heightMapSize) {
 						vPlusJ = bufferVertices [i][j + 1];
 					}
 					else if (yPos + (j + 1) * step < this.planet.heightMapRange) {
@@ -490,17 +490,17 @@ public class PlanetSquare : MonoBehaviour {
 			m.normals = normalsList.ToArray ();
 		}
 		else if (this.jPos == indexSize) {
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					verticesList.Add (EvaluateVertex (xPos + i * step, yPos, zPos + k * step));
 					bufferVertices [i][k] = verticesList [verticesList.Count - 1];
 				}
 			}
 
-			for (int i = 0; i <  PlanetManager.heightMapSize; i++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int i = 0; i <  StellarSystem.heightMapSize; i++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					Vector3 vPlusI;
-					if (i + 1 < PlanetManager.heightMapSize) {
+					if (i + 1 < StellarSystem.heightMapSize) {
 						vPlusI = bufferVertices [i + 1][k];
 					}
 					else if (xPos + (i + 1) * step < this.planet.heightMapRange) {
@@ -524,7 +524,7 @@ public class PlanetSquare : MonoBehaviour {
 					vMinusI = vMinusI - bufferVertices [i][k];
 					
 					Vector3 vPlusK;
-					if (k + 1 < PlanetManager.heightMapSize) {
+					if (k + 1 < StellarSystem.heightMapSize) {
 						vPlusK = bufferVertices [i][k + 1];
 					}
 					else if (zPos + (k + 1) * step < this.planet.heightMapRange) {
@@ -557,16 +557,16 @@ public class PlanetSquare : MonoBehaviour {
 			m.normals = normalsList.ToArray ();
 		}
 		else if (this.iPos == indexSize) {
-			for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					verticesList.Add (EvaluateVertex (xPos, yPos + j * step, zPos + k * step));
 					bufferVertices [j][k] = verticesList [verticesList.Count - 1];
 				}
 			}
-			for (int j = 0; j <  PlanetManager.heightMapSize; j++) {
-				for (int k = 0; k <  PlanetManager.heightMapSize; k++) {
+			for (int j = 0; j <  StellarSystem.heightMapSize; j++) {
+				for (int k = 0; k <  StellarSystem.heightMapSize; k++) {
 					Vector3 vPlusJ;
-					if (j + 1 < PlanetManager.heightMapSize) {
+					if (j + 1 < StellarSystem.heightMapSize) {
 						vPlusJ = bufferVertices [j + 1][k];
 					}
 					else if (yPos + (j + 1) * step < this.planet.heightMapRange) {
@@ -590,7 +590,7 @@ public class PlanetSquare : MonoBehaviour {
 					vMinusJ = vMinusJ - bufferVertices [j][k];
 					
 					Vector3 vPlusK;
-					if (k + 1 < PlanetManager.heightMapSize) {
+					if (k + 1 < StellarSystem.heightMapSize) {
 						vPlusK = bufferVertices [j][k + 1];
 					}
 					else if (zPos + (k + 1) * step < this.planet.heightMapRange) {
@@ -641,7 +641,7 @@ public class PlanetSquare : MonoBehaviour {
 		}
 
 		if (usePlanetManager) {
-			PlanetManager.Manager.Add (this, 0f);
+			StellarSystem.Manager.Add (this, 0f);
 		} 
 		else {
 			this.Initialize ();
@@ -704,7 +704,7 @@ public class PlanetSquare : MonoBehaviour {
 				ps.name = "Square " + ps.subDegree + "." + ps.iPos + ":" + ps.jPos + ":" + ps.kPos;
 
 				if (usePlanetManager) {
-					PlanetManager.Manager.Add (ps, priority);
+					StellarSystem.Manager.Add (ps, priority);
 				}
 				else {
 					ps.Initialize ();

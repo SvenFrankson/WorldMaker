@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(StellarObject))]
+[RequireComponent(typeof(MaterialPosition))]
 public class Planet : MonoBehaviour {
 
 	public string planetName;
@@ -65,8 +66,8 @@ public class Planet : MonoBehaviour {
 
 	public void ReCompute () {
 		this.randomizer = null;
-		this.heightMapRange = PlanetManager.squareLength * Mathf.FloorToInt(Mathf.Pow (2f, this.maxSubDegree)) + 1;
-		this.radius = 2f * this.heightMapRange / Mathf.PI * PlanetManager.TileSize;
+		this.heightMapRange = StellarSystem.squareLength * Mathf.FloorToInt(Mathf.Pow (2f, this.maxSubDegree)) + 1;
+		this.radius = 2f * this.heightMapRange / Mathf.PI * StellarSystem.TileSize;
 		this.heightRange = this.radius * this.heightRangePerCent / 100f;
 		this.atmRange = this.radius * this.atmRangePerCent / 100f;
 		this.mass = this.gravIntensity * this.radius * this.radius;
@@ -160,5 +161,31 @@ public class Planet : MonoBehaviour {
 				atm.name = "Atm";
 			}
 		}
+	}
+
+	public void Setup (string name,
+	                   PlanetSquare squareTemplate,
+	                   int size,  
+	                   float orbitDist, 
+	                   float orbitAlpha,
+	                   float gravIntensity, 
+	                   float atmDensity, 
+	                   int atmPercentRange, 
+	                   int heightPercentRange) {
+		this.name = name;
+		this.planetName = name;
+		this.maxSubDegree = size;
+		this.squareTemplate = squareTemplate.gameObject;
+
+		MaterialPosition matPos = this.GetComponent<MaterialPosition> ();
+		matPos.TargetMat = this.squareTemplate.GetComponent<Renderer> ().sharedMaterial;
+		
+		StellarObject sO = this.GetComponent <StellarObject> ();
+		sO.truePos = Quaternion.AngleAxis (orbitAlpha, Vector3.up) * Vector3.forward * (orbitDist);
+
+		this.gravIntensity = gravIntensity;
+		this.atmDensity = atmDensity;
+		this.atmRangePerCent = atmPercentRange;
+		this.heightRangePerCent = heightPercentRange;
 	}
 }

@@ -25,6 +25,12 @@ public class RandomSeed {
 		this.seed = seed;
 	}
 
+	public float Rand (int i) {
+		int index = i * 41;
+		
+		return Rands [index % RANDOMLENGTH];
+	}
+
 	public float Rand (int i, int j, int k, int d) {
 		int index = i * 41 + j * 42 + k * 43 + d;
 		
