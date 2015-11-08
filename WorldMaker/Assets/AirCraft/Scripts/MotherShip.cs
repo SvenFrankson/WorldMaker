@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(StellarObjectCenter))]
 [RequireComponent(typeof(Rigidbody))]
@@ -27,46 +28,85 @@ public class MotherShip : MonoBehaviour {
 		}
 	}
 
-	public bool engineBoost = false;
-	public float engineBoostPow = 10f;
-	public float engineInc = 5f;
+	public float engineInc = 50f;
 	public float enginePow = 0f;
-	public float enginePowMax = 20f;
-	public float enginePowMin = -5f;
-
-	public float lift;
+	public float enginePowMax = 50f;
+	public float enginePowMin = -50f;
 
 	public float cForward;
 	public float cRight;
 	public float cUp;
+
+	public float yawSpeed;
+	public float pitchSpeed;
+	public float rollSpeed;
 	
-	public float wingC;
-	public float leftWingRotation;
-	public float rightWingRotation;
+	public float forwardVelocity;
+	private float rightVelocity;
+	private float upVelocity;
+	
+	private float yawInput;
+	private float pitchInput;
+	
+	public PilotState pilotMode = PilotState.Pilot;
+	public Planet orbitPlanet = null;
+	public float orbitalPlanetDist = 0f;
+	public float orbitVelocity = 0f;
 
-	public float cYaw;
-	public float cPitch;
-	public float cRoll;
+	public enum PilotState
+	{
+		NoPilot,
+		Pilot,
+		OrbitAutoPilot
+	};
 
-	private Planet[] planets = null;
-	public Planet[] Planets {
+	private List<KeyValuePair<Planet, float>> planets = null;
+	public List<KeyValuePair<Planet, float>> Planets {
 		get {
-			if (planets == null ) {
-				this.planets = FindObjectsOfType <Planet> ();
+			if (this.planets == null) {
+				this.planets = new List<KeyValuePair<Planet, float>> ();
+				foreach (Planet p in FindObjectsOfType <Planet> ()) {
+					this.planets.Add (new KeyValuePair<Planet, float> (p, float.MaxValue));
+				}
 			}
 
 			return this.planets;
 		}
 	}
 
-	private float localAtm = 1f;
+	public Planet closestPlanet {
+		get {
+			if (this.Planets.Count > 0) {
+				return this.Planets [0].Key;
+			}
+			return null;
+		}
+	}
+	public float closestPlanetDist {
+		get {
+			if (this.Planets.Count > 0) {
+				return this.Planets [0].Value;
+			}
+			return float.MaxValue;
+		}
+	}
+
+	private float localAtm = 0f;
 
 	void Start () {
 		this.enginePow = 0f;
 	}
 
 	void Update () {
-		if (!this.orbitalMode) {
+		if (Input.GetKeyDown (KeyCode.Keypad8)) {
+			Time.timeScale += 10f;
+		}
+		if (Input.GetKeyDown (KeyCode.Keypad2)) {
+			Time.timeScale -= 10f;
+			Time.timeScale = Mathf.Max (Time.timeScale, 1f);
+		}
+
+		if (this.pilotMode == PilotState.Pilot) {
 			if (Input.GetKeyDown (KeyCode.W)) {
 				this.enginePow += this.engineInc;
 				if (this.enginePow > this.enginePowMax) {
@@ -81,15 +121,15 @@ public class MotherShip : MonoBehaviour {
 				}
 			}
 		} 
-		else {
-			float dist = (targetPlanet.transform.position - this.transform.position).magnitude;
-			if (dist < distTargetPlanet) {
+		else if (this.pilotMode == PilotState.OrbitAutoPilot) {
+			this.enginePow = 0f;
+			if (this.forwardVelocity < this.orbitVelocity * 0.99f) {
 				this.enginePow += this.engineInc;
 				if (this.enginePow > this.enginePowMax) {
 					this.enginePow = this.enginePowMax;
 				}
 			}
-			else {
+			if (this.forwardVelocity > this.orbitVelocity * 1.1f) {
 				this.enginePow -= this.engineInc;
 				if (this.enginePow < this.enginePowMin) {
 					this.enginePow = this.enginePowMin;
@@ -98,38 +138,19 @@ public class MotherShip : MonoBehaviour {
 		}
 	}
 
-	private float forwardVelocity;
-	private float rightVelocity;
-	private float upVelocity;
-
-	private float sqrt2halved = Mathf.Sqrt (2f) / 2f;
-
-	private float yawInput;
-	private float pitchInput;
-
-	private bool orbitalMode = false;
-
 	void FixedUpdate () {
 		yawInput = 0f;
 		pitchInput = 0f;
 
-		if (!this.orbitalMode) {
+		if (this.pilotMode == PilotState.Pilot) {
 			yawInput = (Input.mousePosition.x - (Screen.width / 2f)) / (Screen.width / 2f);
 			pitchInput = (Input.mousePosition.y - (Screen.height / 2f)) / (Screen.height / 2f);
 			
 			yawInput = yawInput * Mathf.Abs (yawInput);
 			pitchInput = pitchInput * Mathf.Abs (pitchInput);
 		} 
-		else {
-			pitchAngle = Vector3.Angle (this.transform.forward, Vector3.Cross ((targetPlanet.transform.position - this.transform.position), this.transform.right));
-			if (pitchAngle > 1f) {
-				if (Vector3.Dot (this.transform.forward, (this.transform.position - targetPlanet.transform.position)) > 0) {
-					pitchInput = - 1f;
-				}
-				else {
-					pitchInput = 1f;
-				}
-			}
+		else if (this.pilotMode == PilotState.OrbitAutoPilot) {
+			pitchInput = PitchFor (orbitPlanet) / 18f;
 		}
 
 		forwardVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.forward);
@@ -140,122 +161,146 @@ public class MotherShip : MonoBehaviour {
 		float sqrRightVelocity = rightVelocity * Mathf.Abs (rightVelocity);
 		float sqrUpVelocity = upVelocity * Mathf.Abs (upVelocity);
 
-		if (Input.GetKey (KeyCode.Space)) {
-			this.engineBoost = true;
-			this.CRigidbody.AddForce ((enginePow + engineBoostPow) * this.transform.forward);
-		} 
-		else {
-			this.engineBoost = false;
-			this.CRigidbody.AddForce (enginePow * this.transform.forward);
-		}
+		this.CRigidbody.AddForce ((enginePow - sqrForwardVelocity * this.cForward * this.localAtm) * this.transform.forward);
 
 		this.cRigidbody.AddForce (- sqrForwardVelocity * this.cForward * this.transform.forward * this.localAtm);
 		this.cRigidbody.AddForce (- sqrRightVelocity * this.cRight * this.transform.right);
 		this.cRigidbody.AddForce (- sqrUpVelocity * this.cUp * this.transform.up);
 
-		this.CRigidbody.AddTorque (cYaw * yawInput * this.transform.up);
-		this.CRigidbody.AddTorque (- cPitch * pitchInput * this.transform.right);
+		this.CRigidbody.AddTorque (this.yawSpeed * yawInput * this.transform.up);
+		this.CRigidbody.AddTorque (- this.pitchSpeed * pitchInput * this.transform.right);
 
-		this.CRigidbody.AddForce (this.CRigidbody.mass * this.ComputePlanetGravity ());
+		this.CRigidbody.AddForce (this.CRigidbody.mass * this.UpdatePlanets ());
 
 		float roll = 0;
-		if (!this.orbitalMode) {
+		if (this.pilotMode == PilotState.Pilot) {
 			if (Input.GetKey (KeyCode.A)) {
 				roll ++;
 			}
 			if (Input.GetKey (KeyCode.D)) {
 				roll --;
 			}
-		} 
-		else {
-			rollAngle = Vector3.Angle (this.transform.right, Vector3.Cross ((this.transform.position - targetPlanet.transform.position), this.transform.forward));
-			if (rollAngle > 1f) {
-				if (Vector3.Dot (this.transform.right, (this.transform.position - targetPlanet.transform.position)) > 0) {
-					roll --;
-				}
-				else {
-					roll ++;
-				}
-			}
 		}
-		this.CRigidbody.AddTorque (cRoll * roll * this.transform.forward);
+		else if (this.pilotMode == PilotState.OrbitAutoPilot) {
+			roll = RollFor (orbitPlanet) / 18f;
+		}
+
+		if (this.pilotMode == PilotState.OrbitAutoPilot) {
+			this.CRigidbody.MovePosition (this.transform.position + this.transform.up * (this.orbitalPlanetDist - this.DistFor (this.orbitPlanet)));
+		}
+
+		this.CRigidbody.AddTorque (this.rollSpeed * roll * this.transform.forward);
 
 		if (Input.GetKeyDown (KeyCode.O)) {
-			if (this.orbitalMode) {
-				this.ExitOrbitalMode ();
-			}
-			else {
+			if (this.pilotMode == PilotState.Pilot) {
 				this.EnterOrbitalMode ();
+			}
+			else if (this.pilotMode == PilotState.OrbitAutoPilot) {
+				this.ExitOrbitalMode ();
 			}
 		}
 	}
 
 	void OnGUI () {
-		if (this.engineBoost) {
-			GUILayout.TextArea ("EnginePow = " + (this.enginePow + this.engineBoostPow));
-		} 
-		else {
-			GUILayout.TextArea ("EnginePow = " + this.enginePow);
-		}
+		GUILayout.TextArea ("EnginePow = " + this.enginePow);
 		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
 		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
 		GUILayout.TextArea ("UpVelocity = " + this.upVelocity);
 		GUILayout.TextArea ("MouseX = " + this.yawInput);
 		GUILayout.TextArea ("MouseY = " + this.pitchInput);
 		GUILayout.TextArea ("Local Atm = " + this.localAtm);
-		foreach (Planet p in this.Planets) {
-			GUILayout.TextArea (p.planetName + " : " + ((p.TruePos.TruePos - this.TruePos.TruePos).magnitude - p.radius) + " m");
+		foreach (KeyValuePair<Planet, float> p in this.Planets) {
+			GUILayout.TextArea (p.Key.planetName + " : " + p.Value + " m");
 		}
-		if (this.orbitalMode) {
-			GUILayout.TextArea ("Orbital Mode");
-			GUILayout.TextArea ("Target = " + targetPlanet);
-			GUILayout.TextArea ("Distance = " + distTargetPlanet);
-			GUILayout.TextArea ("RollAngle = " + rollAngle);
-			GUILayout.TextArea ("PitchAngle = " + pitchAngle);
-		}
+		GUILayout.TextArea ("Closest = " + this.closestPlanet);
+		GUILayout.TextArea ("Dist = " + this.closestPlanetDist);
+		GUILayout.TextArea ("TimeScale = " + Time.timeScale);
 	}
 
-	private Planet targetPlanet;
-	private float distTargetPlanet = float.MaxValue;
-	private float rollAngle = 0f;
-	private float pitchAngle = 0f;
+	public bool CanEnterOrbitalMode () {
+		if (Mathf.Abs(this.RollFor (this.closestPlanet)) > 10f) {
+			return false;
+		}
+		if (Mathf.Abs(this.PitchFor (this.closestPlanet)) > 10f) {
+			return false;
+		}
+
+		float orbitalSpeedClosest = Mathf.Sqrt (this.closestPlanet.mass / this.closestPlanetDist);
+		if (Mathf.Abs ((this.forwardVelocity - orbitalSpeedClosest) / orbitalSpeedClosest) > 0.1f) {
+			return false;
+		}
+		return true;
+	}
 
 	private void EnterOrbitalMode () {
+		if (this.CanEnterOrbitalMode ()) {
+			this.pilotMode = PilotState.OrbitAutoPilot;
 
-		foreach (Planet p in this.planets) {
-			float dist = (p.TruePos.TruePos - this.TruePos.TruePos).magnitude;
-			if (dist < 40000f) {
-				if (dist < distTargetPlanet) {
-					targetPlanet = p;
-					distTargetPlanet = dist;
-					this.orbitalMode = true;
-				}
-			}
+			this.orbitPlanet = this.closestPlanet;
+			this.orbitalPlanetDist = this.closestPlanetDist;
+			this.orbitVelocity = Mathf.Sqrt (this.closestPlanet.mass / this.closestPlanetDist);
 		}
 	}
 
 	private void ExitOrbitalMode () {
-		targetPlanet = null;
-		distTargetPlanet = float.MaxValue;
-		this.orbitalMode = false;
+		this.pilotMode = PilotState.Pilot;
+
+		this.orbitPlanet = null;
+		this.orbitalPlanetDist = 0f;
+		this.orbitVelocity = 0f;
 	}
 
-	public Vector3 ComputePlanetGravity () {
-		this.localAtm = 0f;
-		Vector3 gravity = Vector3.zero;
-		
-		foreach (Planet p in this.Planets) {
-			float dist = ((p.transform.position - this.transform.position).magnitude - p.radius);
-			dist = Mathf.Max (dist, 0f);
+	public Vector3 UpdatePlanets () {
+		for (int i = 0; i < this.Planets.Count; i++) {
+			KeyValuePair<Planet, float> p = this.Planets [i];
+			float dist = (p.Key.TruePos.TruePos - this.TruePos.TruePos).magnitude;
+			this.Planets [i] = new KeyValuePair<Planet, float> (p.Key, dist);
 
-			gravity += p.mass / (p.TruePos.TruePos - this.TruePos.TruePos).sqrMagnitude * (p.TruePos.TruePos - this.TruePos.TruePos).normalized;
-
-			float a = (p.atmRange - dist) / p.atmRange * p.atmDensity;;
-			if (a > 0) {
-				this.localAtm += a;
+			if (i - 1 >= 0) {
+				KeyValuePair<Planet, float> pPrev = this.Planets [i - 1];
+				if (p.Value < pPrev.Value) {
+					this.Planets [i] = pPrev;
+					this.Planets [i - 1] = p;
+				}
 			}
+		}
+		
+		Vector3 gravity = this.closestPlanet.mass / (this.closestPlanetDist * this.closestPlanetDist) * (this.closestPlanet.TruePos.TruePos - this.TruePos.TruePos).normalized;
+
+		float altitude = this.closestPlanetDist - this.closestPlanet.radius;
+		float a = (this.closestPlanet.atmRange - altitude) / this.closestPlanet.atmRange * this.closestPlanet.atmDensity;;
+		if (a > 0) {
+			this.localAtm += a;
 		}
 
 		return gravity;
+	}
+
+	public float DistFor (Planet p) {
+		foreach (KeyValuePair<Planet, float> pd in this.Planets) {
+			if (p == pd.Key) {
+				return pd.Value;
+			}
+		}
+		
+		return 0f;
+	}
+
+	public float RollFor (Planet p) {
+		Vector3 zero = Vector3.Cross (this.transform.forward, (p.transform.position - this.transform.position));
+		float rollAngle = Vector3.Angle (this.transform.right, zero);
+		if (Vector3.Dot (this.transform.up, zero) < 0) {
+			rollAngle = - rollAngle;
+		}
+		return rollAngle;
+	}
+	
+	public float PitchFor (Planet p) {
+		Vector3 zero = Vector3.Cross (this.transform.right, (this.transform.position - p.transform.position));
+		float pitchAngle = Vector3.Angle (this.transform.forward, zero);
+		if (Vector3.Dot (this.transform.up, zero) < 0) {
+			pitchAngle = - pitchAngle;
+		}
+		return pitchAngle;
 	}
 }

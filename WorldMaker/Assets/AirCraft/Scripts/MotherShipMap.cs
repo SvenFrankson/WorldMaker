@@ -34,10 +34,10 @@ public class MotherShipMap : MonoBehaviour {
 	}
 
 	public void InstantiateIcons () {
-		this.planetsIcons = new GameObject[this.TargetMotherShip.Planets.Length];
+		this.planetsIcons = new GameObject[this.TargetMotherShip.Planets.Count];
 
 		for (int i = 0; i < this.planetsIcons.Length; i++) {
-			Planet p = this.TargetMotherShip.Planets [i];
+			Planet p = this.TargetMotherShip.Planets [i].Key;
 
 			this.planetsIcons [i] = GameObject.Instantiate<GameObject> (this.planetIconPrefab);
 			this.planetsIcons [i].transform.parent = this.transform;

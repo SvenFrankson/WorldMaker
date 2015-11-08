@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: b9bcfba7206356d4095298746df0d56f
+timeCreated: 1446762322
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Dock
+    100002: Engine
+    100004: Map
+    100006: //RootNode
+    100008: Shell
+    100010: WindShield
+    100012: Cube
+    100014: Map.001
+    100016: PanelCenter
+    100018: PanelLeft
+    100020: PanelRight
+    100022: PanelUpLeft
+    100024: PanelUpLeft.001
+    100026: PanelUpRight
+    100028: FrontDock
+    100030: FrontStairs
+    100032: Chair
+    400000: Dock
+    400002: Engine
+    400004: Map
+    400006: //RootNode
+    400008: Shell
+    400010: WindShield
+    400012: Cube
+    400014: Map.001
+    400016: PanelCenter
+    400018: PanelLeft
+    400020: PanelRight
+    400022: PanelUpLeft
+    400024: PanelUpLeft.001
+    400026: PanelUpRight
+    400028: FrontDock
+    400030: FrontStairs
+    400032: Chair
+    2300000: Dock
+    2300002: Engine
+    2300004: Map
+    2300006: Shell
+    2300008: WindShield
+    2300010: Cube
+    2300012: Map.001
+    2300014: PanelCenter
+    2300016: PanelLeft
+    2300018: PanelRight
+    2300020: PanelUpLeft
+    2300022: PanelUpLeft.001
+    2300024: PanelUpRight
+    2300026: FrontDock
+    2300028: FrontStairs
+    2300030: Chair
+    3300000: Dock
+    3300002: Engine
+    3300004: Map
+    3300006: Shell
+    3300008: WindShield
+    3300010: Cube
+    3300012: Map.001
+    3300014: PanelCenter
+    3300016: PanelLeft
+    3300018: PanelRight
+    3300020: PanelUpLeft
+    3300022: PanelUpLeft.001
+    3300024: PanelUpRight
+    3300026: FrontDock
+    3300028: FrontStairs
+    3300030: Chair
+    4300000: Dock
+    4300002: Engine
+    4300004: WindShield
+    4300006: Shell
+    4300008: Map
+    4300010: Cube
+    4300012: Map.001
+    4300014: PanelUpLeft.001
+    4300016: PanelUpLeft
+    4300018: PanelRight
+    4300020: PanelLeft
+    4300022: PanelCenter
+    4300024: PanelUpRight
+    4300026: FrontStairs
+    4300028: FrontDock
+    4300030: Chair
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 1
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
