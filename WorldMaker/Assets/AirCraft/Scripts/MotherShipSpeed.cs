@@ -26,6 +26,7 @@ public class MotherShipSpeed : MonoBehaviour {
 	}
 
 	public void Update () {
-		TargetTextMesh.text = Mathf.FloorToInt (TargetMotherShip.forwardVelocity) + " m/s";
+		TargetTextMesh.text = Mathf.FloorToInt (TargetMotherShip.forwardVelocity) + " m/s\n";
+		TargetTextMesh.text += Mathf.FloorToInt (TargetMotherShip.targetSpeed) + " m/s";
 	}
 }

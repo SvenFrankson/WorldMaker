@@ -1,0 +1,127 @@
+fileFormatVersion: 2
+guid: ee58853c21cc0f7408b670b065183d04
+timeCreated: 1447065256
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Dock
+    100002: ForceField
+    100004: //RootNode
+    100006: Windows
+    100008: WindShield
+    100010: SideColliders
+    100012: ColliderCockpit
+    100014: ColliderDockEast
+    100016: ColliderDockSouth
+    100018: ColliderDockWest
+    100020: ColliderHangar
+    100022: ColliderHome
+    100024: Wings
+    400000: Dock
+    400002: ForceField
+    400004: //RootNode
+    400006: Windows
+    400008: WindShield
+    400010: SideColliders
+    400012: ColliderCockpit
+    400014: ColliderDockEast
+    400016: ColliderDockSouth
+    400018: ColliderDockWest
+    400020: ColliderHangar
+    400022: ColliderHome
+    400024: Wings
+    2300000: Dock
+    2300002: ForceField
+    2300004: Windows
+    2300006: WindShield
+    2300008: SideColliders
+    2300010: ColliderCockpit
+    2300012: ColliderDockEast
+    2300014: ColliderDockSouth
+    2300016: ColliderDockWest
+    2300018: ColliderHangar
+    2300020: ColliderHome
+    2300022: Wings
+    3300000: Dock
+    3300002: ForceField
+    3300004: Windows
+    3300006: WindShield
+    3300008: SideColliders
+    3300010: ColliderCockpit
+    3300012: ColliderDockEast
+    3300014: ColliderDockSouth
+    3300016: ColliderDockWest
+    3300018: ColliderHangar
+    3300020: ColliderHome
+    3300022: Wings
+    4300000: ForceField
+    4300002: Dock
+    4300004: Windows
+    4300006: WindShield
+    4300008: SideColliders
+    4300010: ColliderHome
+    4300012: ColliderHangar
+    4300014: ColliderDockEast
+    4300016: ColliderDockSouth
+    4300018: ColliderDockWest
+    4300020: ColliderCockpit
+    4300022: Wings
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 1
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

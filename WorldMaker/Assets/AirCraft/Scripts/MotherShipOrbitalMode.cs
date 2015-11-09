@@ -30,10 +30,13 @@ public class MotherShipOrbitalMode : MonoBehaviour {
 		Planet p = TargetMotherShip.closestPlanet;
 		float d = TargetMotherShip.closestPlanetDist;
 		if (p != null) {
-			if (TargetMotherShip.pilotMode == MotherShip.PilotState.OrbitAutoPilot) {
-				TargetTextMesh.text += "ON\n";
+			if (TargetMotherShip.pilotMode == MotherShip.PilotState.Orbit) {
+				TargetTextMesh.text += "on\n";
 			}
-			else if (TargetMotherShip.CanEnterOrbitalMode ()) {
+			else if (TargetMotherShip.pilotMode == MotherShip.PilotState.OrbitAutoPilot) {
+				TargetTextMesh.text += "...\n";
+			}
+			else if (TargetMotherShip.CanEnterOrbitalAutoPilotMode ()) {
 				TargetTextMesh.text += "ok\n";
 			}
 			else {

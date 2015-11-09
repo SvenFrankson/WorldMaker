@@ -6,11 +6,40 @@ ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Cube
+    100004: Frame
+    100006: Shell
+    100008: WindShield
+    100010: Wings
     400000: //RootNode
+    400002: Cube
+    400004: Frame
+    400006: Shell
+    400008: WindShield
+    400010: Wings
     2300000: //RootNode
+    2300002: Cube
+    2300004: Frame
+    2300006: Shell
+    2300008: WindShield
+    2300010: Wings
     3300000: //RootNode
+    3300002: Cube
+    3300004: Frame
+    3300006: Shell
+    3300008: WindShield
+    3300010: Wings
     4300000: Cube
+    4300002: Wings
+    4300004: WindShield
+    4300006: Frame
+    4300008: Shell
     6400000: //RootNode
+    6400002: Cube
+    6400004: Frame
+    6400006: Shell
+    6400008: WindShield
+    6400010: Wings
   materials:
     importMaterials: 1
     materialName: 0

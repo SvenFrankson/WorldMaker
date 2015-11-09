@@ -22,6 +22,8 @@ ModelImporter:
     100028: FrontDock
     100030: FrontStairs
     100032: Chair
+    100034: Cube.001
+    100036: Shell.001
     400000: Dock
     400002: Engine
     400004: Map
@@ -39,6 +41,8 @@ ModelImporter:
     400028: FrontDock
     400030: FrontStairs
     400032: Chair
+    400034: Cube.001
+    400036: Shell.001
     2300000: Dock
     2300002: Engine
     2300004: Map
@@ -55,6 +59,8 @@ ModelImporter:
     2300026: FrontDock
     2300028: FrontStairs
     2300030: Chair
+    2300032: Cube.001
+    2300034: Shell.001
     3300000: Dock
     3300002: Engine
     3300004: Map
@@ -71,6 +77,8 @@ ModelImporter:
     3300026: FrontDock
     3300028: FrontStairs
     3300030: Chair
+    3300032: Cube.001
+    3300034: Shell.001
     4300000: Dock
     4300002: Engine
     4300004: WindShield
@@ -87,6 +95,8 @@ ModelImporter:
     4300026: FrontStairs
     4300028: FrontDock
     4300030: Chair
+    4300032: Cube.001
+    4300034: Shell.001
   materials:
     importMaterials: 1
     materialName: 0
