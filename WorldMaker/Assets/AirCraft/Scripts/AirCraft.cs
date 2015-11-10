@@ -4,7 +4,10 @@ using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class AirCraft : MonoBehaviour {
-	
+
+	public MotherShip TargetMotherShip;
+	public Transform CamTarget;
+
 	private Rigidbody cRigidbody;
 	private Rigidbody CRigidbody {
 		get {
@@ -37,9 +40,9 @@ public class AirCraft : MonoBehaviour {
 	public float rollSpeed;
 		
 	private float localAtm = 1f;
-	
-	public Planet planet = null;
 
+	public Player pilot;
+	public GravitationalObject land;
 	public PilotAirCraftState pilotMode;
 
 	public enum PilotAirCraftState
@@ -79,8 +82,6 @@ public class AirCraft : MonoBehaviour {
 	private float yawInput;
 	private float rollInput;
 	
-	private bool orbitalMode = false;
-	
 	public Action YawAndPitchInput;
 
 	public void YawAndPitchPlayerInput () {
@@ -96,40 +97,42 @@ public class AirCraft : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		pitchInput = 0f;
-		yawInput = 0f;
-		rollInput = 0f;
-
-		if (this.YawAndPitchInput != null) {
-			this.YawAndPitchInput ();
+		if (this.pilotMode == PilotAirCraftState.Pilot) {
+			pitchInput = 0f;
+			yawInput = 0f;
+			rollInput = 0f;
+			
+			if (this.YawAndPitchInput != null) {
+				this.YawAndPitchInput ();
+			}
+			
+			forwardVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.forward);
+			rightVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.right);
+			upVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.up);
+			
+			float sqrForwardVelocity = forwardVelocity * Mathf.Abs (forwardVelocity);
+			float sqrRightVelocity = rightVelocity * Mathf.Abs (rightVelocity);
+			float sqrUpVelocity = upVelocity * Mathf.Abs (upVelocity);
+			
+			if (Input.GetKey (KeyCode.Space)) {
+				this.engineBoost = true;
+				this.CRigidbody.AddForce ((enginePow + engineBoostPow) * this.transform.forward);
+			} 
+			else {
+				this.engineBoost = false;
+				this.CRigidbody.AddForce (enginePow * this.transform.forward);
+			}
+			
+			this.cRigidbody.AddForce (- sqrForwardVelocity * this.cForward * this.transform.forward * this.localAtm);
+			this.cRigidbody.AddForce (- sqrRightVelocity * this.cRight * this.transform.right);
+			this.cRigidbody.AddForce (- sqrUpVelocity * this.cUp * this.transform.up);
+			
+			this.CRigidbody.AddTorque (yawSpeed * yawInput * this.transform.up);
+			this.CRigidbody.AddTorque (- pitchSpeed * pitchInput * this.transform.right);
+			this.CRigidbody.AddTorque (rollSpeed * rollInput * this.transform.forward);
+			
+			this.CRigidbody.AddForce (this.CRigidbody.mass * this.ComputePlanetGravity ());
 		}
-		
-		forwardVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.forward);
-		rightVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.right);
-		upVelocity = Vector3.Dot (this.CRigidbody.velocity, this.transform.up);
-		
-		float sqrForwardVelocity = forwardVelocity * Mathf.Abs (forwardVelocity);
-		float sqrRightVelocity = rightVelocity * Mathf.Abs (rightVelocity);
-		float sqrUpVelocity = upVelocity * Mathf.Abs (upVelocity);
-		
-		if (Input.GetKey (KeyCode.Space)) {
-			this.engineBoost = true;
-			this.CRigidbody.AddForce ((enginePow + engineBoostPow) * this.transform.forward);
-		} 
-		else {
-			this.engineBoost = false;
-			this.CRigidbody.AddForce (enginePow * this.transform.forward);
-		}
-		
-		this.cRigidbody.AddForce (- sqrForwardVelocity * this.cForward * this.transform.forward * this.localAtm);
-		this.cRigidbody.AddForce (- sqrRightVelocity * this.cRight * this.transform.right);
-		this.cRigidbody.AddForce (- sqrUpVelocity * this.cUp * this.transform.up);
-		
-		this.CRigidbody.AddTorque (yawSpeed * yawInput * this.transform.up);
-		this.CRigidbody.AddTorque (- pitchSpeed * pitchInput * this.transform.right);
-		this.CRigidbody.AddTorque (rollSpeed * rollInput * this.transform.forward);
-		
-		this.CRigidbody.AddForce (this.CRigidbody.mass * this.ComputePlanetGravity ());
 	}
 	
 	void OnGUI () {
@@ -146,19 +149,22 @@ public class AirCraft : MonoBehaviour {
 		GUILayout.TextArea ("YawInput = " + this.yawInput);
 		GUILayout.TextArea ("RollInput = " + this.rollInput);
 		GUILayout.TextArea ("Local Atm = " + this.localAtm);
+		GUILayout.TextArea ("Land = " + this.land);
 	}
 	
 	public Vector3 ComputePlanetGravity () {
 		this.localAtm = 0f;
 		Vector3 gravity = Vector3.zero;
 
-		if (this.planet != null) {
-			float dist = (this.planet.transform.position - this.transform.position).magnitude;
+		if (this.TargetMotherShip.closestPlanet != null) {
+			Planet p = this.TargetMotherShip.closestPlanet;
+			float dist = (p.transform.position - this.transform.position).magnitude;
 			dist = Mathf.Max (dist, 0f);
 			
-			gravity = this.planet.mass / (dist * dist) * (this.planet.transform.position - this.transform.position).normalized;
+			gravity += p.Grav.GetAttractionFor (this.gameObject);
+			gravity += this.TargetMotherShip.Grav.GetAttractionFor (this.gameObject);
 			
-			float a = (this.planet.atmRange - Mathf.Max (dist - this.planet.radius, 0f)) / this.planet.atmRange * this.planet.atmDensity;;
+			float a = (p.atmRange - Mathf.Max (dist - p.radius, 0f)) / p.atmRange * p.atmDensity;;
 			if (a > 0) {
 				this.localAtm = a;
 			}
@@ -178,13 +184,47 @@ public class AirCraft : MonoBehaviour {
 		}
 	}
 
-	public void TakeControl (Player p) {
-		p.SetKinematic (true);
-		p.transform.parent = this.transform;
-		p.transform.localPosition = Vector3.zero;
-		p.transform.localRotation = Quaternion.identity;
-		p.playerMode = Player.PlayerState.PilotAirCraft;
+	public void TakeOff (Player p) {
+		this.pilot = p;
+
 		this.SwitchModeTo (PilotAirCraftState.Pilot);
+		this.transform.parent = null;
 		this.SetKinematic (false);
+		FindObjectOfType<CamManager> ().GoAirCraftMode (this);
+	}
+
+	public void TryLand () {
+		if (this.CRigidbody.velocity.sqrMagnitude > 0.01f) {
+			Debug.Log ("Can't land, too fast !");
+			return;
+		}
+		if (this.land == null) {
+			Debug.Log ("Can't land, no ground !");
+			return;
+		}
+		this.Land ();
+	}
+
+	private void Land () {
+		this.SwitchModeTo (PilotAirCraftState.NoPilot);
+		this.transform.parent = this.land.transform;
+		this.SetKinematic (true);
+		FindObjectOfType<CamManager> ().GoPlayerMode (this.pilot);
+
+		this.pilot.DropAirCraftControl (this.land);
+	}
+
+	public void OnCollisionEnter (Collision c) {
+		GravitationalObject g = SvenFranksonTools.GetComponentInAllParents<GravitationalObject> (c.collider.gameObject);
+		if (g != null) {
+			this.land = g;
+		}
+	}
+	
+	public void OnCollisionExit (Collision c) {
+		GravitationalObject g = SvenFranksonTools.GetComponentInAllParents<GravitationalObject> (c.collider.gameObject);
+		if (this.land == g) {
+			this.land = null;
+		}
 	}
 }

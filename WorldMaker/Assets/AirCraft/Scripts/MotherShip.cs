@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(StellarObjectCenter))]
+[RequireComponent(typeof(GravitationalObject))]
 [RequireComponent(typeof(Rigidbody))]
 public class MotherShip : MonoBehaviour {
 	
@@ -15,6 +16,17 @@ public class MotherShip : MonoBehaviour {
 			}
 			
 			return truePos;
+		}
+	}
+
+	private GravitationalObject grav;
+	public GravitationalObject Grav {
+		get {
+			if (grav == null) {
+				this.grav = this.GetComponent<GravitationalObject> ();
+			}
+			
+			return grav;
 		}
 	}
 
@@ -155,7 +167,7 @@ public class MotherShip : MonoBehaviour {
 		}
 
 		else if (this.pilotMode == PilotState.OrbitAutoPilot) {
-			this.targetSpeed = Mathf.Sqrt (this.closestPlanet.mass / this.closestPlanetDist);
+			this.targetSpeed = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist);
 			this.SwitchModeTo (PilotState.Orbit);
 		}
 	}
@@ -267,7 +279,7 @@ public class MotherShip : MonoBehaviour {
 			return false;
 		}
 
-		float orbitalSpeedClosest = Mathf.Sqrt (this.closestPlanet.mass / this.closestPlanetDist);
+		float orbitalSpeedClosest = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist);
 
 		if (Mathf.Abs ((this.forwardVelocity - orbitalSpeedClosest) / orbitalSpeedClosest) > 0.1f) {
 			return false;
@@ -306,7 +318,7 @@ public class MotherShip : MonoBehaviour {
 				if (this.CanEnterOrbitalMode ()) {
 					this.orbitPlanet = this.closestPlanet;
 					this.orbitalPlanetDist = this.closestPlanetDist;
-					this.targetSpeed = Mathf.Sqrt (this.closestPlanet.mass / this.closestPlanetDist);
+					this.targetSpeed = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist);
 					this.TruePos.Lock = true;
 					this.YawAndPitchInput = this.YawAndPitchAutoPilotInput;
 					this.pilotMode = newPilotMode;
@@ -330,7 +342,7 @@ public class MotherShip : MonoBehaviour {
 			}
 		}
 		
-		Vector3 gravity = this.closestPlanet.mass / (this.closestPlanetDist * this.closestPlanetDist) * (this.closestPlanet.TruePos.TruePos - this.TruePos.TruePos).normalized;
+		Vector3 gravity = this.closestPlanet.Grav.GetAttractionFor (this.gameObject);
 
 		float altitude = this.closestPlanetDist - this.closestPlanet.radius;
 		float a = (this.closestPlanet.atmRange - altitude) / this.closestPlanet.atmRange * this.closestPlanet.atmDensity;;

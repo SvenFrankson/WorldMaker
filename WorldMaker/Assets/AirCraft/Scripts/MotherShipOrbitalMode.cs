@@ -44,7 +44,7 @@ public class MotherShipOrbitalMode : MonoBehaviour {
 			}
 			TargetTextMesh.text += TargetMotherShip.RollFor (p) + "\n";
 			TargetTextMesh.text += TargetMotherShip.PitchFor (p) + "\n";
-			TargetTextMesh.text += Mathf.FloorToInt(Mathf.Sqrt(p.mass / d)) + " m/s";
+			TargetTextMesh.text += Mathf.FloorToInt(Mathf.Sqrt(p.Grav.mass / d)) + " m/s";
 		}
 	}
 }

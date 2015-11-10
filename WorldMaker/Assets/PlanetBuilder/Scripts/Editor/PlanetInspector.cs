@@ -47,7 +47,7 @@ public class PlanetInspector : Editor {
 		
 		EditorGUILayout.BeginHorizontal ();
 		EditorGUILayout.PrefixLabel ("Mass");
-		EditorGUILayout.LabelField ((Target.mass / 1000f) + " tons");
+		EditorGUILayout.LabelField ((Target.Grav.mass / 1000f) + " tons");
 		EditorGUILayout.EndHorizontal ();
 		
 		if (GUI.changed) {

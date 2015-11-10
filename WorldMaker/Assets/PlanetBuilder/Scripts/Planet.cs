@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(StellarObject))]
+[RequireComponent(typeof(GravitationalObject))]
 [RequireComponent(typeof(MaterialPosition))]
 public class Planet : MonoBehaviour {
 
@@ -18,7 +19,6 @@ public class Planet : MonoBehaviour {
 	public float atmRange;
 
 	public float gravIntensity;
-	public float mass;
 
 	public GameObject squareTemplate;
 	public GameObject waterTemplate;
@@ -32,6 +32,17 @@ public class Planet : MonoBehaviour {
 			}
 			
 			return this.truePos;
+		}
+	}
+	
+	private GravitationalObject grav;
+	public GravitationalObject Grav {
+		get {
+			if (grav == null) {
+				this.grav = this.GetComponent<GravitationalObject> ();
+			}
+			
+			return grav;
 		}
 	}
 
@@ -70,7 +81,7 @@ public class Planet : MonoBehaviour {
 		this.radius = 2f * this.heightMapRange / Mathf.PI * StellarSystem.TileSize;
 		this.heightRange = this.radius * this.heightRangePerCent / 100f;
 		this.atmRange = this.radius * this.atmRangePerCent / 100f;
-		this.mass = this.gravIntensity * this.radius * this.radius;
+		this.Grav.mass = this.gravIntensity * this.radius * this.radius;
 	}
 
 	public int SeedFromName () {

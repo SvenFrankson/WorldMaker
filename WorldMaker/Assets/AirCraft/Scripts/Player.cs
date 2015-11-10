@@ -18,8 +18,8 @@ public class Player : MonoBehaviour {
 	public PlayerState playerMode;
 	public MotherShipChair shipSeat;
 	public AirCraft airCraft;
-
-	public Transform gravityCenter;
+	
+	public GravitationalObject grav;
 
 	private Rigidbody cRigidbody;
 	private Rigidbody CRigidbody {
@@ -32,8 +32,8 @@ public class Player : MonoBehaviour {
 		}
 	}
 	public void SetKinematic (bool k) {
-		this.CRigidbody.isKinematic = k;
 		this.GetComponent<Collider> ().enabled = !k;
+		this.CRigidbody.isKinematic = k;
 	}
 
 	void Start () {
@@ -65,26 +65,36 @@ public class Player : MonoBehaviour {
 				this.transform.RotateAround (this.transform.position, this.transform.up, rotation * rotationSpeed * Time.deltaTime);
 				this.cam.RotateAround (this.cam.transform.position, this.transform.right, - look * this.camSensivity * Time.deltaTime);
 			}
-			
-			if (this.playerMode == PlayerState.Move) {
-				if (Input.GetKeyDown (KeyCode.E)) {
-					this.Activate ();
-				}
+			this.transform.RotateAround (this.transform.position, Vector3.Cross (this.transform.up, (this.transform.position - this.grav.transform.position).normalized), Vector3.Angle ((this.transform.position - this.grav.transform.position).normalized, this.transform.up));
+		}
+		
+		if (this.playerMode == PlayerState.Move) {
+			if (Input.GetKeyDown (KeyCode.E)) {
+				this.Activate ();
 			}
-			else if (this.playerMode == PlayerState.PilotMotherShip) {
-				if (Input.GetKeyDown (KeyCode.E)) {
-					this.shipSeat.DropControl (this);
-				}
+		}
+		else if (this.playerMode == PlayerState.PilotMotherShip) {
+			if (Input.GetKeyDown (KeyCode.E)) {
+				this.shipSeat.DropControl (this);
 			}
-			
-			this.transform.RotateAround (this.transform.position, Vector3.Cross (this.transform.up, (this.transform.position - this.gravityCenter.position).normalized), Vector3.Angle ((this.transform.position - this.gravityCenter.position).normalized, this.transform.up));
+		}
+		else if (this.playerMode == PlayerState.PilotAirCraft) {
+			if (Input.GetKeyDown (KeyCode.E)) {
+				Debug.Log ("Try land");
+				this.airCraft.TryLand ();
+			}
 		}
 	}
 
 	
 	void FixedUpdate () {
 		if (!(this.playerMode == PlayerState.PilotAirCraft)) {
-			this.CRigidbody.AddForce (- (this.transform.position - this.gravityCenter.position).normalized * 10f);
+			if (this.grav == null) {
+				Debug.Log ("Oups ?");
+			}
+			else {
+				this.CRigidbody.AddForce (this.grav.GetAttractionFor (this.gameObject));
+			}
 		}
 	}
 
@@ -96,12 +106,37 @@ public class Player : MonoBehaviour {
 		Physics.Raycast (hit, out hitInfo, 5f);
 
 		if (hitInfo.collider.GetComponent<MotherShipChair> () != null) {
-			Debug.Log ("MotherShipChair Activate");
 			hitInfo.collider.GetComponent<MotherShipChair> ().TakeControl (this);
 		}
 		if (hitInfo.collider.GetComponent<AirCraft> () != null) {
-			Debug.Log ("AirCraft Activate");
-			hitInfo.collider.GetComponent<AirCraft> ().TakeControl (this);
+			this.TakeAirCraftControl (hitInfo.collider.GetComponent<AirCraft> ());
 		}
+	}
+
+	public void TakeAirCraftControl (AirCraft a) {
+		Debug.Log ("TakeAirCraftControl");
+
+		this.airCraft = a;
+
+		this.SetKinematic (true);
+		this.transform.parent = this.transform;
+		this.transform.localPosition = Vector3.zero;
+		this.transform.localRotation = Quaternion.identity;
+		this.playerMode = Player.PlayerState.PilotAirCraft;
+
+		a.TakeOff (this);
+	}
+
+	public void DropAirCraftControl (GravitationalObject g) {
+		
+		this.transform.parent = g.transform;
+		this.grav = g;
+
+		this.transform.position = this.airCraft.transform.position + this.airCraft.transform.forward * 1f;
+
+		this.airCraft = null;
+
+		this.playerMode = Player.PlayerState.Move;
+		this.SetKinematic (false);
 	}
 }
