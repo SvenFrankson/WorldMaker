@@ -119,7 +119,7 @@ public class Player : MonoBehaviour {
 		this.airCraft = a;
 
 		this.SetKinematic (true);
-		this.transform.parent = this.transform;
+		this.transform.SetParent (a.transform, true);
 		this.transform.localPosition = Vector3.zero;
 		this.transform.localRotation = Quaternion.identity;
 		this.playerMode = Player.PlayerState.PilotAirCraft;
@@ -129,10 +129,8 @@ public class Player : MonoBehaviour {
 
 	public void DropAirCraftControl (GravitationalObject g) {
 		
-		this.transform.parent = g.transform;
+		this.transform.SetParent (g.transform, true);
 		this.grav = g;
-
-		this.transform.position = this.airCraft.transform.position + this.airCraft.transform.forward * 1f;
 
 		this.airCraft = null;
 

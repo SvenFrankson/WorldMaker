@@ -22,14 +22,14 @@ public class CamManager : MonoBehaviour {
 
 	public void GoPlayerMode (Player p) {
 		this.camMode = CamMode.Player;
-		this.transform.parent = p.transform;
+		this.transform.SetParent (p.transform, true);
 		this.transform.localPosition = Vector3.zero + Vector3.up * 0.8f;
 		this.transform.localRotation = Quaternion.identity;
 	}
 
 	public void GoAirCraftMode (AirCraft a) {
 		this.camMode = CamMode.AirCraft;
-		this.transform.parent = null;
+		this.transform.SetParent (null, true);
 		this.aircraft = a.transform;
 		this.target = a.CamTarget;
 	}

@@ -120,7 +120,7 @@ public class MotherShip : MonoBehaviour {
 		this.SwitchModeTo (this.pilotMode);
 	}
 
-	void Update () {
+	void InputUpdate () {
 		if (Input.GetKeyDown (KeyCode.Keypad8)) {
 			Time.timeScale += 10f;
 		}
@@ -188,11 +188,13 @@ public class MotherShip : MonoBehaviour {
 	}
 
 	public void YawAndPitchAutoPilotInput () {
-		pitchInput = PitchFor (orbitPlanet) / 360f;
-		rollInput = RollFor (orbitPlanet) / 360f;
+		pitchInput = PitchFor (orbitPlanet) / 36f;
+		rollInput = RollFor (orbitPlanet) / 36f;
 	}
 
-	void FixedUpdate () {
+	void Update () {
+		InputUpdate ();
+
 		yawInput = 0f;
 		pitchInput = 0f;
 		rollInput = 0f;
@@ -226,7 +228,7 @@ public class MotherShip : MonoBehaviour {
 		this.speed += (this.CRigidbody.mass * this.UpdatePlanets ()) * Time.deltaTime;
 
 		if (this.pilotMode == PilotState.Orbit) {
-			this.CRigidbody.MovePosition (this.transform.position + this.transform.up * (this.orbitalPlanetDist - this.DistFor (this.orbitPlanet)));
+			this.transform.position = this.transform.position + this.transform.up * (this.orbitalPlanetDist - this.DistFor (this.orbitPlanet));
 		}
 
 		if (Input.GetKeyDown (KeyCode.O)) {
@@ -244,7 +246,7 @@ public class MotherShip : MonoBehaviour {
 		this.transform.RotateAround (this.transform.position, this.transform.forward, this.rotationSpeed.z * Time.deltaTime);
 	}
 
-//	void OnGUI () {
+	void OnGUI () {
 //		GUILayout.TextArea ("EnginePow = " + this.enginePow);
 //		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
 //		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
@@ -258,7 +260,8 @@ public class MotherShip : MonoBehaviour {
 //		GUILayout.TextArea ("Closest = " + this.closestPlanet);
 //		GUILayout.TextArea ("Dist = " + this.closestPlanetDist);
 //		GUILayout.TextArea ("TimeScale = " + Time.timeScale);
-//	}
+		GUILayout.TextArea ("Position = " + this.transform.position);
+	}
 
 	public bool CanEnterOrbitalAutoPilotMode () {
 		if (this.closestPlanetDist > this.closestPlanet.radius * 5f) {
@@ -293,7 +296,7 @@ public class MotherShip : MonoBehaviour {
 				this.YawAndPitchInput = null;
 				this.orbitPlanet = null;
 				this.orbitalPlanetDist = 0f;
-				this.TruePos.Lock = false;
+				//this.TruePos.Lock = false;
 				this.pilotMode = newPilotMode;
 			}
 		} 
@@ -301,7 +304,7 @@ public class MotherShip : MonoBehaviour {
 			this.YawAndPitchInput = this.YawAndPitchPlayerInput;
 			this.orbitPlanet = null;
 			this.orbitalPlanetDist = 0f;
-			this.TruePos.Lock = false;
+			//this.TruePos.Lock = false;
 			this.pilotMode = newPilotMode;
 		}
 		else if (newPilotMode == PilotState.OrbitAutoPilot) {
@@ -309,7 +312,7 @@ public class MotherShip : MonoBehaviour {
 				this.YawAndPitchInput = this.YawAndPitchAutoPilotInput;
 				this.orbitPlanet = this.closestPlanet;
 				this.orbitalPlanetDist = 0f;
-				this.TruePos.Lock = false;
+				//this.TruePos.Lock = false;
 				this.pilotMode = newPilotMode;
 			}
 		}
@@ -318,8 +321,8 @@ public class MotherShip : MonoBehaviour {
 				if (this.CanEnterOrbitalMode ()) {
 					this.orbitPlanet = this.closestPlanet;
 					this.orbitalPlanetDist = this.closestPlanetDist;
-					this.targetSpeed = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist);
-					this.TruePos.Lock = true;
+					this.targetSpeed = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist) / 10f;
+					//this.TruePos.Lock = true;
 					this.YawAndPitchInput = this.YawAndPitchAutoPilotInput;
 					this.pilotMode = newPilotMode;
 				}

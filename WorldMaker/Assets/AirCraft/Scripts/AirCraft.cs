@@ -72,6 +72,24 @@ public class AirCraft : MonoBehaviour {
 				}
 			}
 		}
+
+		if (this.TargetMotherShip.pilotMode == MotherShip.PilotState.Orbit) {
+			if (this.pilotMode == PilotAirCraftState.Pilot) {
+				if ((this.transform.position - this.TargetMotherShip.transform.position).magnitude > 200f) {
+					if (this.TargetMotherShip.TruePos.Lock == false) {
+						this.TargetMotherShip.TruePos.Lock = true;
+					}
+				}
+				else {
+					if (this.TargetMotherShip.TruePos.Lock == true) {
+						this.transform.position -= this.TargetMotherShip.transform.position;
+						this.cRigidbody.velocity -= this.TargetMotherShip.speed;
+						FindObjectOfType<CamManager> ().transform.position -= this.TargetMotherShip.transform.position;
+						this.TargetMotherShip.TruePos.Lock = false;
+					}
+				}
+			}
+		}
 	}
 	
 	private float forwardVelocity;
@@ -135,22 +153,22 @@ public class AirCraft : MonoBehaviour {
 		}
 	}
 	
-	void OnGUI () {
-		if (this.engineBoost) {
-			GUILayout.TextArea ("EnginePow = " + (this.enginePow + this.engineBoostPow));
-		} 
-		else {
-			GUILayout.TextArea ("EnginePow = " + this.enginePow);
-		}
-		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
-		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
-		GUILayout.TextArea ("UpVelocity = " + this.upVelocity);
-		GUILayout.TextArea ("PitchInput = " + this.pitchInput);
-		GUILayout.TextArea ("YawInput = " + this.yawInput);
-		GUILayout.TextArea ("RollInput = " + this.rollInput);
-		GUILayout.TextArea ("Local Atm = " + this.localAtm);
-		GUILayout.TextArea ("Land = " + this.land);
-	}
+//	void OnGUI () {
+//		if (this.engineBoost) {
+//			GUILayout.TextArea ("EnginePow = " + (this.enginePow + this.engineBoostPow));
+//		} 
+//		else {
+//			GUILayout.TextArea ("EnginePow = " + this.enginePow);
+//		}
+//		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
+//		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
+//		GUILayout.TextArea ("UpVelocity = " + this.upVelocity);
+//		GUILayout.TextArea ("PitchInput = " + this.pitchInput);
+//		GUILayout.TextArea ("YawInput = " + this.yawInput);
+//		GUILayout.TextArea ("RollInput = " + this.rollInput);
+//		GUILayout.TextArea ("Local Atm = " + this.localAtm);
+//		GUILayout.TextArea ("Land = " + this.land);
+//	}
 	
 	public Vector3 ComputePlanetGravity () {
 		this.localAtm = 0f;

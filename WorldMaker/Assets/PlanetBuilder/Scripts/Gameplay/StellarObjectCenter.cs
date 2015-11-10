@@ -35,7 +35,7 @@ public class StellarObjectCenter : MonoBehaviour {
 		this.firstUpdate = this.FirstUpdate;
 	}
 
-	public void Update () {
+	public void LateUpdate () {
 		if (this.firstUpdate != null) {
 			this.firstUpdate ();
 		}
@@ -45,16 +45,18 @@ public class StellarObjectCenter : MonoBehaviour {
 			this.transform.position = Vector3.zero;
 			
 			foreach (StellarObject sO in this.stellarObjects) {
-				float dist = (sO.truePos - this.truePos).magnitude;
-				if (dist < this.lowLimit) {
-					sO.transform.position = sO.truePos - this.truePos;
-					sO.transform.localScale = Vector3.one;
-				}
-				else {
-					float viewDist = lowLimit + Mathf.Max(dist - lowLimit, 0f) * factorLimit;
-					sO.transform.position = ((sO.truePos - this.truePos).normalized * viewDist + this.smoothness * sO.transform.position) / (this.smoothness + 1f);
-					float scale = viewDist / dist;
-					sO.transform.localScale = Vector3.one * scale;
+				if (sO.transform.parent == null) {
+					float dist = (sO.truePos - this.truePos).magnitude;
+					if (dist < this.lowLimit) {
+						sO.transform.position = sO.truePos - this.truePos;
+						sO.transform.localScale = Vector3.one;
+					}
+					else {
+						float viewDist = lowLimit + Mathf.Max(dist - lowLimit, 0f) * factorLimit;
+						sO.transform.position = ((sO.truePos - this.truePos).normalized * viewDist + this.smoothness * sO.transform.position) / (this.smoothness + 1f);
+						float scale = viewDist / dist;
+						sO.transform.localScale = Vector3.one * scale;
+					}
 				}
 			}
 		}

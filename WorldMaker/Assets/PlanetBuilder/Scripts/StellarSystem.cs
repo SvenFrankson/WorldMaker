@@ -138,7 +138,7 @@ public class StellarSystem : MonoBehaviour {
 				string planetName = randomNames [nameIndex];
 				randomNames.RemoveAt (nameIndex);
 
-				int size = Mathf.RoundToInt (6.5f + 1.5f * this.Randomizer.Rand (5 * i));
+				int size = Mathf.RoundToInt (7.5f + 1.5f * this.Randomizer.Rand (5 * i));
 
 				int pollIndex = Mathf.FloorToInt(Mathf.Abs(this.Randomizer.Rand (2 * i) * tmpPoll.Count * 42)) % tmpPoll.Count;
 				PlanetSquare sTemplate = tmpPoll [pollIndex];
@@ -147,7 +147,7 @@ public class StellarSystem : MonoBehaviour {
 				float orbitAlpha = (this.Randomizer.Rand (3 * i) + 1) * 180f;
 				float orbitDist = i * 100000f;
 
-				int heightRangePercent = Mathf.RoundToInt (10f + 5f * this.Randomizer.Rand (6 * i));
+				int heightRangePercent = Mathf.RoundToInt (20f + 10f * this.Randomizer.Rand (6 * i));
 				float atmDensity = 1f + 1f * this.Randomizer.Rand (7 * i);
 				int atmRangePercent = Mathf.RoundToInt (30f + 20f * this.Randomizer.Rand (8 * i));
 				float gravIntensity = 10f + (size - 6) * 5 + 4f * this.Randomizer.Rand (9 * i);

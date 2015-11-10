@@ -121,7 +121,7 @@ public class PlanetSquare : MonoBehaviour {
 		yRad = Mathf.Deg2Rad * yRad;
 		zRad = Mathf.Deg2Rad * zRad;
 
-		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value / 2f * this.planet.heightRange * StellarSystem.TileSize);
+		return new Vector3 (Mathf.Sin (xRad) / Mathf.Cos (xRad), Mathf.Sin (yRad) / Mathf.Cos (yRad), Mathf.Sin (zRad) / Mathf.Cos (zRad)).normalized * (this.planet.radius + value * this.planet.heightRange);
 	}
 
 	public float Evaluate (int x, int y, int z) {

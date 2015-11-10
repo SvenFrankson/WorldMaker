@@ -1,18 +1,22 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AirCraft\Scripts\Player.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\PlanetBuilder\Scripts\StellarSystem.cs">
     <Files>
-      <File FileName="Assets\AirCraft\Scripts\AirCraft.cs" Line="201" Column="37" />
-      <File FileName="Assets\AirCraft\Scripts\Player.cs" Line="74" Column="5" />
-      <File FileName="Assets\AirCraft\Scripts\MotherShip.cs" Line="321" Column="65" />
+      <File FileName="Assets\AirCraft\Scripts\Player.cs" Line="122" Column="47" />
+      <File FileName="Assets\AirCraft\Scripts\AirCraft.cs" Line="86" Column="63" />
+      <File FileName="Assets\AirCraft\Scripts\MotherShip.cs" Line="231" Column="134" />
       <File FileName="Assets\AirCraft\Scripts\MotherShipChair.cs" Line="1" Column="1" />
-      <File FileName="Assets\PlanetBuilder\Scripts\StellarSystem.cs" Line="1" Column="1" />
-      <File FileName="Assets\AirCraft\Scripts\CamManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\AirCraft\Scripts\GravitationalObject.cs" Line="9" Column="69" />
-      <File FileName="Assets\PlanetBuilder\Scripts\Planet.cs" Line="172" Column="22" />
-      <File FileName="Assets\AirCraft\Scripts\MotherShipClosestPlanet.cs" Line="35" Column="51" />
-      <File FileName="Assets\AirCraft\Scripts\MotherShipOrbitalMode.cs" Line="47" Column="62" />
-      <File FileName="Assets\PlanetBuilder\Scripts\Editor\PlanetInspector.cs" Line="50" Column="48" />
+      <File FileName="Assets\PlanetBuilder\Scripts\StellarSystem.cs" Line="150" Column="56" />
+      <File FileName="Assets\AirCraft\Scripts\CamManager.cs" Line="11" Column="23" />
+      <File FileName="Assets\AirCraft\Scripts\GravitationalObject.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlanetBuilder\Scripts\Planet.cs" Line="1" Column="1" />
+      <File FileName="Assets\AirCraft\Scripts\MotherShipClosestPlanet.cs" Line="1" Column="1" />
+      <File FileName="Assets\AirCraft\Scripts\MotherShipOrbitalMode.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlanetBuilder\Scripts\Editor\PlanetInspector.cs" Line="1" Column="1" />
+      <File FileName="Assets\Utils\GetComponentInAllParents.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlanetBuilder\Scripts\Gameplay\StellarObjectCenter.cs" Line="45" Column="4" />
+      <File FileName="Assets\PlanetBuilder\Scripts\Gameplay\StellarObject.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlanetBuilder\Scripts\PlanetSquare.cs" Line="124" Column="200" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
