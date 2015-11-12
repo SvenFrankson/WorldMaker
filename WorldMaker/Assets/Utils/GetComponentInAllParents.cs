@@ -6,7 +6,7 @@ public static class SvenFranksonTools {
 
 	public static T GetComponentInAllParents<T> (GameObject g) {
 		T c = default(T);
-		Transform p = g.transform.parent;
+		Transform p = g.transform;
 
 		while (p != null) {
 			c = p.GetComponent<T> ();

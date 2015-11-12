@@ -27,8 +27,8 @@ public class MotherShipOrbitalMode : MonoBehaviour {
 
 	public void Update () {
 		TargetTextMesh.text = "";
-		Planet p = TargetMotherShip.closestPlanet;
-		float d = TargetMotherShip.closestPlanetDist;
+		Planet p = TargetMotherShip.Planets [this.TargetMotherShip.SelectedPlanetIndex].Key;
+		float d = TargetMotherShip.Planets [this.TargetMotherShip.SelectedPlanetIndex].Value;
 		if (p != null) {
 			if (TargetMotherShip.pilotMode == MotherShip.PilotState.Orbit) {
 				TargetTextMesh.text += "on\n";
@@ -45,6 +45,8 @@ public class MotherShipOrbitalMode : MonoBehaviour {
 			TargetTextMesh.text += TargetMotherShip.RollFor (p) + "\n";
 			TargetTextMesh.text += TargetMotherShip.PitchFor (p) + "\n";
 			TargetTextMesh.text += Mathf.FloorToInt(Mathf.Sqrt(p.Grav.mass / d)) + " m/s";
+
+
 		}
 	}
 }

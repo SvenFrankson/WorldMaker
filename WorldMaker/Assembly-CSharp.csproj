@@ -50,11 +50,12 @@
      <Compile Include="Assets\AirCraft\Scripts\CamManager.cs" />
      <Compile Include="Assets\AirCraft\Scripts\GravitationalObject.cs" />
      <Compile Include="Assets\AirCraft\Scripts\MotherShip.cs" />
-     <Compile Include="Assets\AirCraft\Scripts\MotherShipChair.cs" />
-     <Compile Include="Assets\AirCraft\Scripts\MotherShipClosestPlanet.cs" />
      <Compile Include="Assets\AirCraft\Scripts\MotherShipDock.cs" />
+     <Compile Include="Assets\AirCraft\Scripts\MotherShipHangar.cs" />
      <Compile Include="Assets\AirCraft\Scripts\MotherShipMap.cs" />
      <Compile Include="Assets\AirCraft\Scripts\MotherShipOrbitalMode.cs" />
+     <Compile Include="Assets\AirCraft\Scripts\MotherShipPlanet.cs" />
+     <Compile Include="Assets\AirCraft\Scripts\MotherShipSeat.cs" />
      <Compile Include="Assets\AirCraft\Scripts\MotherShipSpeed.cs" />
      <Compile Include="Assets\AirCraft\Scripts\Player.cs" />
      <Compile Include="Assets\PlanetBuilder\Resources\Material\Scripts\MaterialPosition.cs" />

@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
 	};
 
 	public PlayerState playerMode;
-	public MotherShipChair shipSeat;
+	public MotherShipSeat shipSeat;
 	public AirCraft airCraft;
 	
 	public GravitationalObject grav;
@@ -99,23 +99,20 @@ public class Player : MonoBehaviour {
 	}
 
 	public void Activate () {
-		Debug.Log ("Activate");
 		Ray hit = new Ray (this.cam.position, this.cam.forward);
 		RaycastHit hitInfo;
 
 		Physics.Raycast (hit, out hitInfo, 5f);
 
-		if (hitInfo.collider.GetComponent<MotherShipChair> () != null) {
-			hitInfo.collider.GetComponent<MotherShipChair> ().TakeControl (this);
+		if (hitInfo.collider.GetComponent<MotherShipSeat> () != null) {
+			hitInfo.collider.GetComponent<MotherShipSeat> ().TakeControl (this);
 		}
-		if (hitInfo.collider.GetComponent<AirCraft> () != null) {
-			this.TakeAirCraftControl (hitInfo.collider.GetComponent<AirCraft> ());
+		if (SvenFranksonTools.GetComponentInAllParents <AirCraft> (hitInfo.collider.gameObject) != null) {
+			this.TakeAirCraftControl (SvenFranksonTools.GetComponentInAllParents <AirCraft> (hitInfo.collider.gameObject));
 		}
 	}
 
 	public void TakeAirCraftControl (AirCraft a) {
-		Debug.Log ("TakeAirCraftControl");
-
 		this.airCraft = a;
 
 		this.SetKinematic (true);

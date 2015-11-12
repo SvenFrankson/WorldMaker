@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(TextMesh))]
-public class MotherShipClosestPlanet : MonoBehaviour {
+public class MotherShipPlanet : MonoBehaviour {
 
 
 	public MotherShip targetMotherShip;
@@ -27,15 +27,14 @@ public class MotherShipClosestPlanet : MonoBehaviour {
 
 	public void Update () {
 		TargetTextMesh.text = "";
-		Planet p = TargetMotherShip.closestPlanet;
-		float d = TargetMotherShip.closestPlanetDist;
+		Planet p = TargetMotherShip.SelectedPlanet;
+		float d = TargetMotherShip.SelectedPlanetDist;
 		if (p != null) {
 			TargetTextMesh.text += p.planetName + "\n";
 			TargetTextMesh.text += Mathf.FloorToInt(d) + " m\n";
 			TargetTextMesh.text += Mathf.FloorToInt(p.Grav.mass / 1000f) + " T\n";
 			TargetTextMesh.text += (Mathf.FloorToInt(p.gravIntensity * 100f) / 1000f) + " g\n";
 			TargetTextMesh.text += Mathf.FloorToInt(p.radius) + " m";
-			//TargetTextMesh.text += Mathf.FloorToInt(Mathf.Sqrt(p.mass / d)) + " m/s";
 		}
 	}
 }

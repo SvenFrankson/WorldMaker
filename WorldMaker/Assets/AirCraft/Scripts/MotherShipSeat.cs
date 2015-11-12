@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class MotherShipChair : MonoBehaviour {
+public class MotherShipSeat : MonoBehaviour {
 
 	public MotherShip targetMotherShip;
 	public MotherShip TargetMotherShip {
@@ -19,6 +19,7 @@ public class MotherShipChair : MonoBehaviour {
 		p.transform.position = this.transform.position ;
 		if (TargetMotherShip.pilotMode == MotherShip.PilotState.NoPilot) {
 			TargetMotherShip.SwitchModeTo (MotherShip.PilotState.Pilot);
+			TargetMotherShip.playerInput = true;
 		}
 	}
 
@@ -26,5 +27,6 @@ public class MotherShipChair : MonoBehaviour {
 		p.playerMode = Player.PlayerState.Move;
 		p.shipSeat = null;
 		TargetMotherShip.SwitchModeTo (MotherShip.PilotState.NoPilot);
+		TargetMotherShip.playerInput = false;
 	}
 }

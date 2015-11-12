@@ -44,6 +44,7 @@ public class AirCraft : MonoBehaviour {
 	public Player pilot;
 	public GravitationalObject land;
 	public PilotAirCraftState pilotMode;
+	public MotherShipHangar hangar;
 
 	public enum PilotAirCraftState
 	{
@@ -141,6 +142,7 @@ public class AirCraft : MonoBehaviour {
 				this.CRigidbody.AddForce (enginePow * this.transform.forward);
 			}
 			
+			this.cRigidbody.AddForce (sqrForwardVelocity * this.lift * this.transform.up * this.localAtm);
 			this.cRigidbody.AddForce (- sqrForwardVelocity * this.cForward * this.transform.forward * this.localAtm);
 			this.cRigidbody.AddForce (- sqrRightVelocity * this.cRight * this.transform.right);
 			this.cRigidbody.AddForce (- sqrUpVelocity * this.cUp * this.transform.up);
@@ -151,9 +153,16 @@ public class AirCraft : MonoBehaviour {
 			
 			this.CRigidbody.AddForce (this.CRigidbody.mass * this.ComputePlanetGravity ());
 		}
+
+		if (this.hangar != null) {
+			this.CRigidbody.AddForce ((this.hangar.transform.position - this.transform.position).normalized * this.hangar.anchorStrength * (this.hangar.transform.position - this.transform.position).magnitude);
+			//this.CRigidbody.AddTorque (Vector3.Cross(this.hangar.transform.forward, this.transform.forward) * this.hangar.anchorStrength);
+			//this.CRigidbody.AddTorque (Vector3.Cross(this.hangar.transform.right, this.transform.right) * this.hangar.anchorStrength);
+			//this.CRigidbody.AddTorque (Vector3.Cross(this.hangar.transform.up, this.transform.up) * this.hangar.anchorStrength);
+		}
 	}
 	
-//	void OnGUI () {
+	void OnGUI () {
 //		if (this.engineBoost) {
 //			GUILayout.TextArea ("EnginePow = " + (this.enginePow + this.engineBoostPow));
 //		} 
@@ -167,25 +176,24 @@ public class AirCraft : MonoBehaviour {
 //		GUILayout.TextArea ("YawInput = " + this.yawInput);
 //		GUILayout.TextArea ("RollInput = " + this.rollInput);
 //		GUILayout.TextArea ("Local Atm = " + this.localAtm);
-//		GUILayout.TextArea ("Land = " + this.land);
-//	}
+		GUILayout.TextArea ("Land = " + this.land);
+		GUILayout.TextArea ("Hangar = " + this.hangar);
+	}
 	
 	public Vector3 ComputePlanetGravity () {
-		this.localAtm = 0f;
+		this.localAtm = 0.05f;
 		Vector3 gravity = Vector3.zero;
 
-		if (this.TargetMotherShip.closestPlanet != null) {
-			Planet p = this.TargetMotherShip.closestPlanet;
-			float dist = (p.transform.position - this.transform.position).magnitude;
-			dist = Mathf.Max (dist, 0f);
-			
-			gravity += p.Grav.GetAttractionFor (this.gameObject);
-			gravity += this.TargetMotherShip.Grav.GetAttractionFor (this.gameObject);
-			
-			float a = (p.atmRange - Mathf.Max (dist - p.radius, 0f)) / p.atmRange * p.atmDensity;;
-			if (a > 0) {
-				this.localAtm = a;
-			}
+		Planet p = this.TargetMotherShip.Planets [0].Key;
+		float dist = (p.transform.position - this.transform.position).magnitude;
+		dist = Mathf.Max (dist, 0f);
+		
+		gravity += p.Grav.GetAttractionFor (this.gameObject);
+		gravity += this.TargetMotherShip.Grav.GetAttractionFor (this.gameObject);
+		
+		float a = (p.atmRange - Mathf.Max (dist - p.radius, 0f)) / p.atmRange * p.atmDensity;;
+		if (a > 0) {
+			this.localAtm = a;
 		}
 		
 		return gravity;
@@ -243,6 +251,20 @@ public class AirCraft : MonoBehaviour {
 		GravitationalObject g = SvenFranksonTools.GetComponentInAllParents<GravitationalObject> (c.collider.gameObject);
 		if (this.land == g) {
 			this.land = null;
+		}
+	}
+
+	public void OnTriggerEnter (Collider c) {		
+		MotherShipHangar h = c.GetComponent<MotherShipHangar> ();
+		if (h != null) {
+			this.hangar = h;
+		}
+	}
+	
+	public void OnTriggerExit (Collider c) {		
+		MotherShipHangar h = c.GetComponent<MotherShipHangar> ();
+		if (this.hangar == h) {
+			this.hangar = null;
 		}
 	}
 }

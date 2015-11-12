@@ -19,10 +19,12 @@ public class MotherShipMap : MonoBehaviour {
 	public float height;
 
 	public GameObject planetIconPrefab;
+	public GameObject selectedPlanetIconPrefab;
 	public GameObject shipIconPrefab;
 
 	private GameObject[] planetsIcons;
 	private GameObject shipIcon;
+	private GameObject selectedPlanetIcon;
 
 	public void Start () {
 		this.InstantiateIcons ();
@@ -31,6 +33,7 @@ public class MotherShipMap : MonoBehaviour {
 	public void Update () {
 		this.shipIcon.transform.localPosition = Vector3.up * height + TargetMotherShip.TruePos.TruePos * this.radius / 1000000f;
 		this.shipIcon.transform.localRotation = TargetMotherShip.transform.rotation;
+		this.selectedPlanetIcon.transform.localPosition = Vector3.up * height + TargetMotherShip.SelectedPlanet.TruePos.TruePos * this.radius / 1000000f;
 	}
 
 	public void InstantiateIcons () {
@@ -48,5 +51,9 @@ public class MotherShipMap : MonoBehaviour {
 		this.shipIcon.transform.parent = this.transform;
 		this.shipIcon.transform.localPosition = Vector3.up * height + TargetMotherShip.TruePos.TruePos * this.radius / 1000000f;
 		this.shipIcon.transform.localRotation = TargetMotherShip.transform.rotation;
+		
+		this.selectedPlanetIcon = GameObject.Instantiate<GameObject> (this.selectedPlanetIconPrefab);
+		this.selectedPlanetIcon.transform.parent = this.transform;
+		this.selectedPlanetIcon.transform.localPosition = Vector3.up * height + TargetMotherShip.SelectedPlanet.TruePos.TruePos * this.radius / 1000000f;
 	}
 }

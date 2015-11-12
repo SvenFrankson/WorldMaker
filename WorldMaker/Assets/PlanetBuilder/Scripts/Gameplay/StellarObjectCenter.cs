@@ -13,10 +13,6 @@ public class StellarObjectCenter : MonoBehaviour {
 	}
 
 	public float lowLimit = 50000f;
-	public float farLimit = 60000f;
-	public float endLimit = 1000000f;
-	private float factorLimit;
-
 	public float smoothness = 100f;
 
 	public StellarObject[] stellarObjects;
@@ -30,7 +26,6 @@ public class StellarObjectCenter : MonoBehaviour {
 	}
 
 	public void Start () {
-		this.factorLimit = (farLimit - lowLimit) / (endLimit - lowLimit);
 		this.FindStellarObjects ();
 		this.firstUpdate = this.FirstUpdate;
 	}
@@ -52,9 +47,8 @@ public class StellarObjectCenter : MonoBehaviour {
 						sO.transform.localScale = Vector3.one;
 					}
 					else {
-						float viewDist = lowLimit + Mathf.Max(dist - lowLimit, 0f) * factorLimit;
-						sO.transform.position = ((sO.truePos - this.truePos).normalized * viewDist + this.smoothness * sO.transform.position) / (this.smoothness + 1f);
-						float scale = viewDist / dist;
+						sO.transform.position = ((sO.truePos - this.truePos).normalized * lowLimit + this.smoothness * sO.transform.position) / (this.smoothness + 1f);
+						float scale = lowLimit / dist;
 						sO.transform.localScale = Vector3.one * scale;
 					}
 				}
@@ -63,8 +57,6 @@ public class StellarObjectCenter : MonoBehaviour {
 	}
 
 	public void FirstUpdate () {
-		Debug.Log ("First Update");
-
 		this.truePos += this.transform.position;
 		this.transform.position = Vector3.zero;
 		
@@ -75,7 +67,7 @@ public class StellarObjectCenter : MonoBehaviour {
 				sO.transform.localScale = Vector3.one;
 			}
 			else {
-				float viewDist = lowLimit + Mathf.Max(dist - lowLimit, 0f) * factorLimit;
+				float viewDist = lowLimit;
 				sO.transform.position = (sO.truePos - this.truePos).normalized * viewDist;
 				float scale = viewDist / dist;
 				sO.transform.localScale = Vector3.one * scale;

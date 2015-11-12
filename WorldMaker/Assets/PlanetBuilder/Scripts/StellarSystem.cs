@@ -145,11 +145,11 @@ public class StellarSystem : MonoBehaviour {
 				tmpPoll.Remove (sTemplate);
 
 				float orbitAlpha = (this.Randomizer.Rand (3 * i) + 1) * 180f;
-				float orbitDist = i * 100000f;
+				float orbitDist = i * 50000f;
 
-				int heightRangePercent = Mathf.RoundToInt (20f + 10f * this.Randomizer.Rand (6 * i));
+				int heightRangePercent = Mathf.RoundToInt (10f + 5f * this.Randomizer.Rand (6 * i));
 				float atmDensity = 1f + 1f * this.Randomizer.Rand (7 * i);
-				int atmRangePercent = Mathf.RoundToInt (30f + 20f * this.Randomizer.Rand (8 * i));
+				int atmRangePercent = Mathf.RoundToInt (20f + 10f * this.Randomizer.Rand (8 * i));
 				float gravIntensity = 10f + (size - 6) * 5 + 4f * this.Randomizer.Rand (9 * i);
 				gravIntensity = Mathf.Max (gravIntensity, 1f);
 

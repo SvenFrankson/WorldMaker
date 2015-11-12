@@ -69,7 +69,8 @@ public class MotherShip : MonoBehaviour {
 	private float yawInput;
 	private float pitchInput;
 	private float rollInput;
-	
+
+	public bool playerInput = false;
 	public PilotState pilotMode = PilotState.Pilot;
 	public Planet orbitPlanet = null;
 	public float orbitalPlanetDist = 0f;
@@ -78,6 +79,7 @@ public class MotherShip : MonoBehaviour {
 	{
 		NoPilot,
 		Pilot,
+		AutoPilot,
 		Orbit,
 		OrbitAutoPilot
 	};
@@ -91,25 +93,31 @@ public class MotherShip : MonoBehaviour {
 					this.planets.Add (new KeyValuePair<Planet, float> (p, float.MaxValue));
 				}
 			}
-
 			return this.planets;
 		}
 	}
-
-	public Planet closestPlanet {
+	
+	private int selectedPlanetIndex = 0;
+	public int SelectedPlanetIndex {
 		get {
-			if (this.Planets.Count > 0) {
-				return this.Planets [0].Key;
-			}
-			return null;
+			return this.selectedPlanetIndex;
+		}
+		set {
+			this.selectedPlanetIndex = value;
+			this.selectedPlanetIndex = Mathf.Max (0, this.selectedPlanetIndex);
+			this.selectedPlanetIndex = Mathf.Min (this.Planets.Count - 1, this.selectedPlanetIndex);
 		}
 	}
-	public float closestPlanetDist {
+
+	public Planet SelectedPlanet {
 		get {
-			if (this.Planets.Count > 0) {
-				return this.Planets [0].Value;
-			}
-			return float.MaxValue;
+			return this.Planets [this.SelectedPlanetIndex].Key;
+		}
+	}
+
+	public float SelectedPlanetDist {
+		get {
+			return this.Planets [this.SelectedPlanetIndex].Value;
 		}
 	}
 
@@ -122,11 +130,12 @@ public class MotherShip : MonoBehaviour {
 
 	void InputUpdate () {
 		if (Input.GetKeyDown (KeyCode.Keypad8)) {
-			Time.timeScale += 10f;
+			Time.timeScale *= 2f;
+			Time.timeScale = Mathf.Min (Time.timeScale, 8f);
 		}
 		if (Input.GetKeyDown (KeyCode.Keypad2)) {
-			Time.timeScale -= 10f;
-			Time.timeScale = Mathf.Max (Time.timeScale, 1f);
+			Time.timeScale /= 2f;
+			Time.timeScale = Mathf.Max (Time.timeScale, 1/8f);
 		}
 
 		this.enginePow = 0f;
@@ -165,10 +174,36 @@ public class MotherShip : MonoBehaviour {
 			this.targetSpeed = Mathf.Max (this.targetSpeed, 0f);
 			this.targetSpeed = Mathf.Min (this.targetSpeed, this.maxSpeed);
 		}
-
+		else if (this.pilotMode == PilotState.AutoPilot) {
+			this.targetSpeed = this.maxSpeed;
+			if (this.SelectedPlanetDist < this.SelectedPlanet.radius * 10f) {
+				this.targetSpeed = this.maxSpeed / 2f;
+			}
+			this.SwitchModeTo (PilotState.OrbitAutoPilot);
+		}
 		else if (this.pilotMode == PilotState.OrbitAutoPilot) {
-			this.targetSpeed = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist);
+			this.targetSpeed = Mathf.Sqrt (this.SelectedPlanet.Grav.mass / this.SelectedPlanetDist);
 			this.SwitchModeTo (PilotState.Orbit);
+		}
+
+		if (this.playerInput) {
+			if (Input.GetKeyDown (KeyCode.P)) {
+				if (this.pilotMode == PilotState.Pilot) {
+					this.SwitchModeTo (PilotState.AutoPilot);
+				}
+				else {
+					this.SwitchModeTo (PilotState.Pilot);
+				}
+			}
+			
+			if (this.pilotMode == PilotState.Pilot) {
+				if (Input.GetKeyDown (KeyCode.R)) {
+					this.SelectedPlanetIndex = this.SelectedPlanetIndex + 1;
+				}
+				else if (Input.GetKeyDown (KeyCode.F)) {
+					this.SelectedPlanetIndex = this.SelectedPlanetIndex - 1;
+				}
+			}
 		}
 	}
 
@@ -186,8 +221,18 @@ public class MotherShip : MonoBehaviour {
 			rollInput = -1f;
 		}
 	}
-
+	
 	public void YawAndPitchAutoPilotInput () {
+		pitchInput = (PitchFor (this.SelectedPlanet) - 85f) / 36f;
+		rollInput = RollFor (this.SelectedPlanet) / 36f;
+	}
+	
+	public void YawAndPitchOrbitAutoPilotInput () {
+		pitchInput = PitchFor (this.SelectedPlanet) / 36f;
+		rollInput = RollFor (this.SelectedPlanet) / 36f;
+	}
+
+	public void YawAndPitchOrbitInput () {
 		pitchInput = PitchFor (orbitPlanet) / 36f;
 		rollInput = RollFor (orbitPlanet) / 36f;
 	}
@@ -231,15 +276,6 @@ public class MotherShip : MonoBehaviour {
 			this.transform.position = this.transform.position + this.transform.up * (this.orbitalPlanetDist - this.DistFor (this.orbitPlanet));
 		}
 
-		if (Input.GetKeyDown (KeyCode.O)) {
-			if (this.pilotMode == PilotState.Pilot) {
-				this.SwitchModeTo (PilotState.OrbitAutoPilot);
-			}
-			else if ((this.pilotMode == PilotState.OrbitAutoPilot) || (this.pilotMode == PilotState.Orbit)) {
-				this.SwitchModeTo (PilotState.Pilot);
-			}
-		}
-
 		this.transform.position += this.speed * Time.deltaTime;
 		this.transform.RotateAround (this.transform.position, this.transform.right, this.rotationSpeed.x * Time.deltaTime);
 		this.transform.RotateAround (this.transform.position, this.transform.up, this.rotationSpeed.y * Time.deltaTime);
@@ -260,11 +296,13 @@ public class MotherShip : MonoBehaviour {
 //		GUILayout.TextArea ("Closest = " + this.closestPlanet);
 //		GUILayout.TextArea ("Dist = " + this.closestPlanetDist);
 //		GUILayout.TextArea ("TimeScale = " + Time.timeScale);
-		GUILayout.TextArea ("Position = " + this.transform.position);
+//		GUILayout.TextArea ("Position = " + this.transform.position);
+		GUILayout.TextArea ("TimeScale = " + Time.timeScale);
+		GUILayout.TextArea ("PilotMode = " + this.pilotMode);
 	}
 
 	public bool CanEnterOrbitalAutoPilotMode () {
-		if (this.closestPlanetDist > this.closestPlanet.radius * 5f) {
+		if (this.SelectedPlanetDist > this.SelectedPlanet.radius * 3f) {
 			return false;
 		}
 
@@ -275,14 +313,14 @@ public class MotherShip : MonoBehaviour {
 		if (!this.CanEnterOrbitalAutoPilotMode ()) {
 			return false;
 		}
-		if (Mathf.Abs(this.RollFor (this.closestPlanet)) > 10f) {
+		if (Mathf.Abs(this.RollFor (this.SelectedPlanet)) > 10f) {
 			return false;
 		}
-		if (Mathf.Abs(this.PitchFor (this.closestPlanet)) > 10f) {
+		if (Mathf.Abs(this.PitchFor (this.SelectedPlanet)) > 10f) {
 			return false;
 		}
 
-		float orbitalSpeedClosest = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist);
+		float orbitalSpeedClosest = Mathf.Sqrt (this.SelectedPlanet.Grav.mass / this.SelectedPlanetDist);
 
 		if (Mathf.Abs ((this.forwardVelocity - orbitalSpeedClosest) / orbitalSpeedClosest) > 0.1f) {
 			return false;
@@ -296,7 +334,6 @@ public class MotherShip : MonoBehaviour {
 				this.YawAndPitchInput = null;
 				this.orbitPlanet = null;
 				this.orbitalPlanetDist = 0f;
-				//this.TruePos.Lock = false;
 				this.pilotMode = newPilotMode;
 			}
 		} 
@@ -304,26 +341,31 @@ public class MotherShip : MonoBehaviour {
 			this.YawAndPitchInput = this.YawAndPitchPlayerInput;
 			this.orbitPlanet = null;
 			this.orbitalPlanetDist = 0f;
-			//this.TruePos.Lock = false;
+			this.pilotMode = newPilotMode;
+		}
+		else if (newPilotMode == PilotState.AutoPilot) {
+			this.YawAndPitchInput = this.YawAndPitchAutoPilotInput;
+			this.orbitPlanet = null;
+			this.orbitalPlanetDist = 0f;
 			this.pilotMode = newPilotMode;
 		}
 		else if (newPilotMode == PilotState.OrbitAutoPilot) {
-			if (this.CanEnterOrbitalAutoPilotMode ()) {
-				this.YawAndPitchInput = this.YawAndPitchAutoPilotInput;
-				this.orbitPlanet = this.closestPlanet;
-				this.orbitalPlanetDist = 0f;
-				//this.TruePos.Lock = false;
-				this.pilotMode = newPilotMode;
+			if (this.pilotMode == PilotState.AutoPilot) {
+				if (this.CanEnterOrbitalAutoPilotMode ()) {
+					this.YawAndPitchInput = this.YawAndPitchOrbitAutoPilotInput;
+					this.orbitPlanet = null;
+					this.orbitalPlanetDist = 0f;
+					this.pilotMode = newPilotMode;
+				}
 			}
 		}
 		else if (newPilotMode == PilotState.Orbit) {
 			if (this.pilotMode == PilotState.OrbitAutoPilot) {
 				if (this.CanEnterOrbitalMode ()) {
-					this.orbitPlanet = this.closestPlanet;
-					this.orbitalPlanetDist = this.closestPlanetDist;
-					this.targetSpeed = Mathf.Sqrt (this.closestPlanet.Grav.mass / this.closestPlanetDist) / 10f;
-					//this.TruePos.Lock = true;
-					this.YawAndPitchInput = this.YawAndPitchAutoPilotInput;
+					this.orbitPlanet = this.SelectedPlanet;
+					this.orbitalPlanetDist = this.SelectedPlanetDist;
+					this.targetSpeed = Mathf.Sqrt (this.SelectedPlanet.Grav.mass / this.SelectedPlanetDist) / 10f;
+					this.YawAndPitchInput = this.YawAndPitchOrbitInput;
 					this.pilotMode = newPilotMode;
 				}
 			}
@@ -341,14 +383,20 @@ public class MotherShip : MonoBehaviour {
 				if (p.Value < pPrev.Value) {
 					this.Planets [i] = pPrev;
 					this.Planets [i - 1] = p;
+					if (this.SelectedPlanetIndex == i) {
+						this.SelectedPlanetIndex = i - 1;
+					}
+					else if (this.SelectedPlanetIndex == i - 1) {
+						this.SelectedPlanetIndex = i;
+					}
 				}
 			}
 		}
 		
-		Vector3 gravity = this.closestPlanet.Grav.GetAttractionFor (this.gameObject);
+		Vector3 gravity = this.Planets [0].Key.Grav.GetAttractionFor (this.gameObject);
 
-		float altitude = this.closestPlanetDist - this.closestPlanet.radius;
-		float a = (this.closestPlanet.atmRange - altitude) / this.closestPlanet.atmRange * this.closestPlanet.atmDensity;;
+		float altitude = this.Planets [0].Value - this.Planets [0].Key.radius;
+		float a = (this.Planets [0].Key.atmRange - altitude) / this.Planets [0].Key.atmRange * this.Planets [0].Key.atmDensity;;
 		if (a > 0) {
 			this.localAtm += a;
 		}

@@ -168,7 +168,7 @@ public class PlanetSquare : MonoBehaviour {
 
 			float v = v0 * (1f - zd) + v1 * zd;
 			
-			value += v / Mathf.FloorToInt(Mathf.Pow (2f, d));
+			value += v / Mathf.FloorToInt(Mathf.Pow (2f, d - 2));
 		}
 
 		return value;
