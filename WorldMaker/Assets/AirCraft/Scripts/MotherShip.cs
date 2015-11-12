@@ -282,25 +282,6 @@ public class MotherShip : MonoBehaviour {
 		this.transform.RotateAround (this.transform.position, this.transform.forward, this.rotationSpeed.z * Time.deltaTime);
 	}
 
-	void OnGUI () {
-//		GUILayout.TextArea ("EnginePow = " + this.enginePow);
-//		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
-//		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
-//		GUILayout.TextArea ("UpVelocity = " + this.upVelocity);
-//		GUILayout.TextArea ("MouseX = " + this.yawInput);
-//		GUILayout.TextArea ("MouseY = " + this.pitchInput);
-//		GUILayout.TextArea ("Local Atm = " + this.localAtm);
-//		foreach (KeyValuePair<Planet, float> p in this.Planets) {
-//			GUILayout.TextArea (p.Key.planetName + " : " + p.Value + " m");
-//		}
-//		GUILayout.TextArea ("Closest = " + this.closestPlanet);
-//		GUILayout.TextArea ("Dist = " + this.closestPlanetDist);
-//		GUILayout.TextArea ("TimeScale = " + Time.timeScale);
-//		GUILayout.TextArea ("Position = " + this.transform.position);
-		GUILayout.TextArea ("TimeScale = " + Time.timeScale);
-		GUILayout.TextArea ("PilotMode = " + this.pilotMode);
-	}
-
 	public bool CanEnterOrbitalAutoPilotMode () {
 		if (this.SelectedPlanetDist > this.SelectedPlanet.radius * 3f) {
 			return false;

@@ -27,26 +27,15 @@ public class MotherShipOrbitalMode : MonoBehaviour {
 
 	public void Update () {
 		TargetTextMesh.text = "";
-		Planet p = TargetMotherShip.Planets [this.TargetMotherShip.SelectedPlanetIndex].Key;
-		float d = TargetMotherShip.Planets [this.TargetMotherShip.SelectedPlanetIndex].Value;
-		if (p != null) {
-			if (TargetMotherShip.pilotMode == MotherShip.PilotState.Orbit) {
-				TargetTextMesh.text += "on\n";
-			}
-			else if (TargetMotherShip.pilotMode == MotherShip.PilotState.OrbitAutoPilot) {
-				TargetTextMesh.text += "...\n";
-			}
-			else if (TargetMotherShip.CanEnterOrbitalAutoPilotMode ()) {
-				TargetTextMesh.text += "ok\n";
-			}
-			else {
-				TargetTextMesh.text += "no\n";
-			}
-			TargetTextMesh.text += TargetMotherShip.RollFor (p) + "\n";
-			TargetTextMesh.text += TargetMotherShip.PitchFor (p) + "\n";
-			TargetTextMesh.text += Mathf.FloorToInt(Mathf.Sqrt(p.Grav.mass / d)) + " m/s";
-
-
+		if ((TargetMotherShip.pilotMode == MotherShip.PilotState.NoPilot) || (TargetMotherShip.pilotMode == MotherShip.PilotState.Pilot)) {
+			TargetTextMesh.text += "AutoPilot Off\n";
+			TargetTextMesh.text += "Hit (P) to activate.\n";
+			TargetTextMesh.text += "Destination : " + TargetMotherShip.SelectedPlanet.planetName;
+		}
+		else {
+			TargetTextMesh.text += "AutoPilot activated\n";
+			TargetTextMesh.text += "Hit (P) to disable.\n";
+			TargetTextMesh.text += "Destination : " + TargetMotherShip.SelectedPlanet.planetName;
 		}
 	}
 }

@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
+	
+	public GUISkin UISkin;
 
 	public float speed;
 	public float rotationSpeed;
@@ -85,7 +87,6 @@ public class Player : MonoBehaviour {
 			}
 		}
 	}
-
 	
 	void FixedUpdate () {
 		if (!(this.playerMode == PlayerState.PilotAirCraft)) {
@@ -95,6 +96,19 @@ public class Player : MonoBehaviour {
 			else {
 				this.CRigidbody.AddForce (this.grav.GetAttractionFor (this.gameObject));
 			}
+		}
+	}
+
+	public void OnGUI () {
+		GUI.skin = UISkin;
+		if (this.playerMode == PlayerState.Move) {
+			GUILayout.TextArea ("(WASD) : Move and Straff");
+			GUILayout.TextArea ("(Mouse) : Rotate and Look around");
+			GUILayout.TextArea ("(E) : Sit on PilotSeat.");
+			GUILayout.TextArea ("(E) : Take Aircraft Control.");
+		} 
+		else if (this.playerMode == PlayerState.PilotMotherShip) {
+			GUILayout.TextArea ("(E) : Leave PilotSeat.");
 		}
 	}
 

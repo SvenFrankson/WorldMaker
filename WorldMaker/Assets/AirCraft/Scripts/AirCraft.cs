@@ -5,6 +5,8 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class AirCraft : MonoBehaviour {
 
+	public GUISkin UISkin;
+
 	public MotherShip TargetMotherShip;
 	public Transform CamTarget;
 
@@ -23,11 +25,11 @@ public class AirCraft : MonoBehaviour {
 	}
 	
 	public bool engineBoost = false;
-	public float engineBoostPow = 10f;
+	public float engineBoostPow = 20f;
 	public float engineInc = 5f;
 	public float enginePow = 0f;
-	public float enginePowMax = 20f;
-	public float enginePowMin = -5f;
+	public float enginePowMax = 0f;
+	public float enginePowMin = 0f;
 	
 	public float lift;
 	
@@ -153,35 +155,32 @@ public class AirCraft : MonoBehaviour {
 			
 			this.CRigidbody.AddForce (this.CRigidbody.mass * this.ComputePlanetGravity ());
 		}
-
-		if (this.hangar != null) {
-			this.CRigidbody.AddForce ((this.hangar.transform.position - this.transform.position).normalized * this.hangar.anchorStrength * (this.hangar.transform.position - this.transform.position).magnitude);
-			//this.CRigidbody.AddTorque (Vector3.Cross(this.hangar.transform.forward, this.transform.forward) * this.hangar.anchorStrength);
-			//this.CRigidbody.AddTorque (Vector3.Cross(this.hangar.transform.right, this.transform.right) * this.hangar.anchorStrength);
-			//this.CRigidbody.AddTorque (Vector3.Cross(this.hangar.transform.up, this.transform.up) * this.hangar.anchorStrength);
-		}
 	}
 	
 	void OnGUI () {
-//		if (this.engineBoost) {
-//			GUILayout.TextArea ("EnginePow = " + (this.enginePow + this.engineBoostPow));
-//		} 
-//		else {
-//			GUILayout.TextArea ("EnginePow = " + this.enginePow);
-//		}
-//		GUILayout.TextArea ("ForwardVelocity = " + this.forwardVelocity);
-//		GUILayout.TextArea ("RightdVelocity = " + this.rightVelocity);
-//		GUILayout.TextArea ("UpVelocity = " + this.upVelocity);
-//		GUILayout.TextArea ("PitchInput = " + this.pitchInput);
-//		GUILayout.TextArea ("YawInput = " + this.yawInput);
-//		GUILayout.TextArea ("RollInput = " + this.rollInput);
-//		GUILayout.TextArea ("Local Atm = " + this.localAtm);
-		GUILayout.TextArea ("Land = " + this.land);
-		GUILayout.TextArea ("Hangar = " + this.hangar);
+		if (this.pilotMode == PilotAirCraftState.Pilot) {
+			GUI.skin = this.UISkin;
+			if (this.engineBoost) {
+				GUILayout.TextArea ("EnginePow = " + (this.enginePow + this.engineBoostPow));
+			} 
+			else {
+				GUILayout.TextArea ("EnginePow = " + this.enginePow);
+			}
+			GUILayout.TextArea ("ForwardVelocity = " + Mathf.RoundToInt(this.forwardVelocity * 100) / 100f);
+			GUILayout.TextArea ("Local Atm = " + Mathf.RoundToInt(this.localAtm * 100) / 100f);
+			GUILayout.TextArea ("Land = " + (this.land != null));
+			if (this.land != null) {
+				GUILayout.TextArea ("(E) : Leave Aircraft");
+			}
+			GUILayout.TextArea ("Hangar = " + (this.hangar != null));
+		}
 	}
 	
 	public Vector3 ComputePlanetGravity () {
 		this.localAtm = 0.05f;
+		if (this.hangar != null) {
+			this.localAtm = 2f;
+		}
 		Vector3 gravity = Vector3.zero;
 
 		Planet p = this.TargetMotherShip.Planets [0].Key;

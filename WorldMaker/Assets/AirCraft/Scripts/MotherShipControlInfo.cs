@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(TextMesh))]
-public class MotherShipSpeed : MonoBehaviour {
+public class MotherShipControlInfo : MonoBehaviour {
 
 
 	public MotherShip targetMotherShip;
@@ -25,12 +25,19 @@ public class MotherShipSpeed : MonoBehaviour {
 		}
 	}
 
+	public MotherShip.PilotState targetPilotState;
+	private string text;
+
+	public void Start () {
+		this.text = this.TargetTextMesh.text;
+	}
+
 	public void Update () {
-		TargetTextMesh.text = "Current " + Mathf.RoundToInt (TargetMotherShip.forwardVelocity) + " m/s\n";
-		TargetTextMesh.text += "Target " + Mathf.RoundToInt (TargetMotherShip.targetSpeed) + " m/s\n";
-		if (TargetMotherShip.pilotMode == MotherShip.PilotState.Pilot) {
-			TargetTextMesh.text += "(Z) : Speed Up\n";
-			TargetTextMesh.text += "(S) : Slow Down";
+		if (TargetMotherShip.pilotMode == targetPilotState) {
+			this.TargetTextMesh.text = text;
+		}
+		else {
+			this.TargetTextMesh.text = "";
 		}
 	}
 }
